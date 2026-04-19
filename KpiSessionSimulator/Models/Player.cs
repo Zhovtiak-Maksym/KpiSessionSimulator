@@ -7,6 +7,8 @@
         public PlayerStats Stats { get; set; }
         public List<string> Achievements { get; set; }
         public string Faculty { get; set; }
+        public bool IsONSecondary { get; set; }
+        public bool IsExpelled { get; set; }
 
         public Player()
         {

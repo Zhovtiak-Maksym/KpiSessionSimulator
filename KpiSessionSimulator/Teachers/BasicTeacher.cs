@@ -7,11 +7,13 @@ namespace KpiSessionSimulator.Teachers
     {
         public string Name { get; set; }
         protected IPunishment PunishmentStrategy { get; set; }
+        public string Subject { get; set; }
 
-        protected BasicTeacher(string name, IPunishment punishment)
+        protected BasicTeacher(string name, IPunishment punishment, string subject)
         {
             Name = name;
             PunishmentStrategy = punishment;
+            Subject = subject;
         }
 
         public abstract void Interact(Player player);
