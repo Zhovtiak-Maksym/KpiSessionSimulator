@@ -9,11 +9,13 @@
         public string Faculty { get; set; }
         public bool IsONSecondary { get; set; }
         public bool IsExpelled { get; set; }
+        public int WrongAnswersStreak { get; set; }
 
         public Player()
         {
             Achievements = new List<string>();
             Faculty = "ФПСПМ";
+            WrongAnswersStreak = 0;
         }
     }
 }

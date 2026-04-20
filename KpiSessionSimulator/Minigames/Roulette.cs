@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace KpiSessionSimulator.Interfaces
+namespace KpiSessionSimulator.Minigames
 {
-    internal interface IMiniGame
+    internal class Roulette
     {
     }
 }
