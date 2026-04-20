@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using KpiSessionSimulator.Models;
+using KpiSessionSimulator.Teachers;
 
 namespace KpiSessionSimulator.Interfaces
 {
-    internal interface IMiniGame
+    public interface IMiniGame
     {
+        bool Play(Player player, BasicTeacher teacher, int numberOfQuestion);
     }
 }
