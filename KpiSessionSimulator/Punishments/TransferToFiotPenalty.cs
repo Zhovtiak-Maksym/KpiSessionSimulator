@@ -3,11 +3,11 @@ using KpiSessionSimulator.Models;
 
 namespace KpiSessionSimulator.Punishments
 {
-    internal class TransferToFiot : IPunishment
+    internal class TransferToFiotPenalty : IPunishment
     {
         private readonly string _transferToFaculty;
 
-        public TransferToFiot(string transferToFaculty)
+        public TransferToFiotPenalty(string transferToFaculty)
         {
             _transferToFaculty = transferToFaculty;
         }
