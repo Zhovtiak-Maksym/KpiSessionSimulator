@@ -178,15 +178,31 @@ namespace KpiSessionSimulator.Core
 
         private void IncreaseDifficulty()
         {
-            if (State.CurrentDifficulty == Difficulty.Easy)
+            switch (State.CurrentDifficulty)
             {
-                State.CurrentDifficulty = Difficulty.Medium;
-                Console.WriteLine("\nНаступні питання будуть складнішими...");
-            }
-            else if (State.CurrentDifficulty == Difficulty.Medium)
-            {
-                State.CurrentDifficulty = Difficulty.Difficult;
-                Console.WriteLine("\nНаступні питання будуть найскладнішими...");
+                case Difficulty.Easy:
+                    State.CurrentDifficulty = Difficulty.Normal;
+                    Console.WriteLine("\nСкладність підвищено до 'Нормальної'");
+                    break;
+
+                case Difficulty.Normal:
+                    State.CurrentDifficulty = Difficulty.Medium;
+                    Console.WriteLine("\nВикладач починає ставити додаткові питання. Складність 'Середня'");
+                    break;
+
+                case Difficulty.Medium:
+                    State.CurrentDifficulty = Difficulty.Difficult;
+                    Console.WriteLine("\nВикладач хмуриться. Наступні питання будуть дуже складними!");
+                    break;
+
+                case Difficulty.Difficult:
+                    State.CurrentDifficulty = Difficulty.DeathMode;
+                    Console.WriteLine("\nDeath Mode! Моліться Богу");
+                    break;
+
+                case Difficulty.DeathMode:
+                    Console.WriteLine("\nСкладність вже максимальна. Атмосфера наганяє думки про відрахування...");
+                    break;
             }
         }
 

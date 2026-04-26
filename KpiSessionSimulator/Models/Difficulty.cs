@@ -2,8 +2,10 @@
 {
     public enum Difficulty
     {
-        Easy,
-        Medium,
-        Difficult
+        Easy,      
+        Normal,    
+        Medium,     
+        Difficult,       
+        DeathMode   
     }
 }
