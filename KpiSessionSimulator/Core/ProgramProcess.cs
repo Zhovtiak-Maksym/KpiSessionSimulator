@@ -10,7 +10,7 @@ namespace KpiSessionSimulator.Core
         public const int QuestionsToAnswer = 8;
         public const int QuestionsToPass = 6;
 
-        public const int RouletteProbability = 30;        
+        public const int RouletteProbability = 35;        
         public const int BlackjackLossesForPenalty = 3;  
         
         private const int ShortPauseMs = 1500;            
@@ -21,10 +21,7 @@ namespace KpiSessionSimulator.Core
         private List<Question> Questions;
         private Random Rnd = new Random();
         private Roulette ExamRoulette;
-
-        private int CorrectAnswers = 0;
-        private Difficulty CurrentDifficulty = Difficulty.Easy;
-        private int BlackjackLosses = 0;
+        private ExamState State;
 
         public ProgramProcess(Player player, BasicTeacher teacher)
         {
@@ -32,6 +29,7 @@ namespace KpiSessionSimulator.Core
             Teacher = teacher;
             Questions = GenerateTestQuestions();
             ExamRoulette = new Roulette();
+            State = new ExamState();
         }
 
         public void Exam()
@@ -51,7 +49,7 @@ namespace KpiSessionSimulator.Core
                     break;
                 }
 
-                Console.WriteLine($"\nПитання {i} з {QuestionsToAnswer} (Поточна складність: {CurrentDifficulty})");
+                Console.WriteLine($"\nПитання {i} з {QuestionsToAnswer} (Поточна складність: {State.CurrentDifficulty})");
 
                 int ticket1 = Rnd.Next(1, 10);
                 int ticket2 = Rnd.Next(10, 20);
@@ -85,9 +83,9 @@ namespace KpiSessionSimulator.Core
             if (!Player.IsExpelled)
             {
                 Console.WriteLine($"\nЕкзамен Завершено...");
-                Console.WriteLine($"Ваш результат: {CorrectAnswers} з {QuestionsToAnswer} правильних відповідей.");
+                Console.WriteLine($"Ваш результат: {State.CorrectAnswers} з {QuestionsToAnswer} правильних відповідей.");
 
-                if (CorrectAnswers >= QuestionsToPass)
+                if (State.CorrectAnswers >= QuestionsToPass)
                 {
                     Console.WriteLine("Вітаємо! Ви склали екзамен!");
                 }
@@ -113,69 +111,88 @@ namespace KpiSessionSimulator.Core
 
             if (int.TryParse(input, out int answerIdx) && (answerIdx - 1) == question.IndexOfCorrectAnswer)
             {
-                Console.WriteLine("\nВідповідь зараховано");
-                CorrectAnswers++;
+                Console.WriteLine("\nВідповідь зараховано!");
+                State.CorrectAnswers++;
                 Player.WrongAnswersStreak = 0;
             }
             else
             {
-                Console.WriteLine($"\nНеправильно! {Teacher.Name} випалює очами у вас дірку");
-                Player.WrongAnswersStreak++;
+                HandleWrongAnswer(questionNum);
+            }
+        }
 
-                Console.WriteLine("Відіграєтесь у мінігрі? (y/n): ");
+        private void HandleWrongAnswer(int questionNum)
+        {
+            Console.WriteLine($"\nНеправильно! {Teacher.Name} випалює очами у вас дірку...");
+            Player.WrongAnswersStreak++;
 
-                if (Console.ReadLine()?.ToLower() == "y")
+            Console.Write("Відіграєтесь у мінігрі? (так/ні): ");
+
+            if (Console.ReadLine()?.ToLower() == "так")
+            {
+                bool isRoulette = Rnd.Next(1, 101) <= RouletteProbability;
+                IMiniGame miniGame = isRoulette ? ExamRoulette : new Blackjack();
+
+                Console.WriteLine("\nПідготовка до міні-гри...");
+                Thread.Sleep(ShortPauseMs);
+
+                Console.WriteLine("\n-------------------------------------");
+                Console.WriteLine(isRoulette ? "      МІНІГРА: РУЛЕТКА      " : "          МІНІГРА: БЛЕКДЖЕК           ");
+                Console.WriteLine("-------------------------------------");
+                Thread.Sleep(ShortPauseMs);
+
+                bool wonMinigame = miniGame.Play(Player, Teacher, questionNum);
+
+                Thread.Sleep(ShortPauseMs);
+                Console.WriteLine("\n-------------------------------------");
+                Console.WriteLine("        Повернення до екзамену...         ");
+                Console.WriteLine("--------------------------------------");
+                Thread.Sleep(ShortPauseMs);
+
+                if (wonMinigame)
                 {
-                    bool isRoulette = Rnd.Next(1, 101) <= RouletteProbability;
-                    IMiniGame miniGame = isRoulette ? ExamRoulette : new Blackjack();
-
-                    bool wonMinigame = miniGame.Play(Player, Teacher, questionNum);
-
-                    if (wonMinigame)
-                    {
-                        Console.WriteLine("\nВи виграли в мінігру! Маєте другий шанс");
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nВи програли в мінігру! Викладач починає потроху карати...");
-
-                        if (!isRoulette)
-                        {
-                            BlackjackLosses++;
-
-                            if (BlackjackLosses % BlackjackLossesForPenalty == 0)
-                            {
-                                Console.WriteLine($"\nВи програли в Блекджек вже {BlackjackLosses} рази");
-                                IncreaseDifficulty();
-                            }
-                        }
-                    }
+                    Console.WriteLine("Ви виграли в мінігру! Маєте другий шанс");
                 }
                 else
                 {
-                    Console.WriteLine("\nВи прийняли мінус без бою");
-                    IncreaseDifficulty();
+                    Console.WriteLine("Ви програли в мінігру! Викладач починає карати...");
+
+                    if (!isRoulette)
+                    {
+                        State.BlackjackLosses++;
+
+                        if (State.BlackjackLosses % BlackjackLossesForPenalty == 0)
+                        {
+                            Console.WriteLine($"Ви програли в Блекджек вже {State.BlackjackLosses} рази");
+                            IncreaseDifficulty();
+                        }
+                    }
                 }
+            }
+            else
+            {
+                Console.WriteLine("\nВи прийняли мінус без бою");
+                IncreaseDifficulty();
             }
         }
 
         private void IncreaseDifficulty()
         {
-            if (CurrentDifficulty == Difficulty.Easy)
+            if (State.CurrentDifficulty == Difficulty.Easy)
             {
-                CurrentDifficulty = Difficulty.Medium;
+                State.CurrentDifficulty = Difficulty.Medium;
                 Console.WriteLine("\nНаступні питання будуть складнішими...");
             }
-            else if (CurrentDifficulty == Difficulty.Medium)
+            else if (State.CurrentDifficulty == Difficulty.Medium)
             {
-                CurrentDifficulty = Difficulty.Difficult;
+                State.CurrentDifficulty = Difficulty.Difficult;
                 Console.WriteLine("\nНаступні питання будуть найскладнішими...");
             }
         }
 
         private Question GetQuestion()
         {
-            var availableQuestions = Questions.Where(q => q.Difficulty == CurrentDifficulty).ToList();
+            var availableQuestions = Questions.Where(q => q.Difficulty == State.CurrentDifficulty).ToList();
 
             if (availableQuestions.Count == 0)
             {
