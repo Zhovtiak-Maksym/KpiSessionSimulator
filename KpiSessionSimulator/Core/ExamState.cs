@@ -7,12 +7,14 @@ namespace KpiSessionSimulator.Core
         public int CorrectAnswers { get; set; }
         public Difficulty CurrentDifficulty { get; set; }
         public int BlackjackLosses { get; set; }
+        public bool IsHospitalized { get; set; }
 
         public ExamState()
         {
             CorrectAnswers = 0;
             CurrentDifficulty = Difficulty.Easy;
             BlackjackLosses = 0;
+            IsHospitalized = false;
         }
     }
 }

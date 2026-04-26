@@ -7,48 +7,40 @@ namespace KpiSessionSimulator.Minigames
     public class Roulette : IMiniGame
     {
         public const int BulletSlots = 6;
-        public const int FreeSlots = 2;
+        public const int MaxBullets = 4;
         public int CurrBullets { get; private set; }
 
         public Roulette()
         {
-            CurrBullets = 1;
+            CurrBullets = 2;
         }
 
         public bool Play(Player player, BasicTeacher teacher, int numberOfQuestion)
         {
-            if(numberOfQuestion > 0 && numberOfQuestion % 3 == 0)
-            {
-                CurrBullets++;
-            }
-
-            if(player.WrongAnswersStreak > 0 && player.WrongAnswersStreak % 3 == 0)
-            {
-                CurrBullets++;
-            }
-
-            if(CurrBullets > BulletSlots - FreeSlots)
-            {
-                CurrBullets = BulletSlots - FreeSlots;
-            }
-
-            Console.WriteLine("Ви чуєте прокрут барабану револьвера...");
-            Console.WriteLine($"\n{teacher.Name}: Якщо не вчили, може, хоч це допоможе...");
+            Console.WriteLine("\nВи чуєте прокрут барабану револьвера...");
+            Console.WriteLine($"\n{teacher.Name}: Якщо не вчили, може хоч це допоможе...");
+            Console.WriteLine("(натисніть будь-яку клавішу для пострілу)");
             Console.WriteLine($"Кількість патронів: {CurrBullets}/{BulletSlots}");
-            Console.WriteLine("(натисність будь-яку клавішу для пострілу)");
             Console.ReadKey();
 
             Random rnd = new Random();
 
-            if(rnd.Next(1, BulletSlots + 1) > CurrBullets)
+            if (rnd.Next(1, BulletSlots + 1) > CurrBullets)
             {
-                Console.WriteLine("Чутно металевий 'клац'...");
+                Console.WriteLine("\nЧутно металевий 'клац'...");
                 Console.WriteLine($"\n{teacher.Name}: Сьогодні ваш другий День народження!");
+
+                if (CurrBullets < MaxBullets)
+                {
+                    CurrBullets++;
+                    Console.WriteLine($"Ви вижили! Кількість патронів у рулетці збільшено до {CurrBullets}");
+                }
 
                 return true;
             }
 
             Console.WriteLine("\nПостріл...");
+            Console.WriteLine($"Вас забирає швидка. {teacher.Name} тихо ховає револьвер у стіл.");
 
             PlayerStats curStats = player.Stats;
             curStats.Deaths++;

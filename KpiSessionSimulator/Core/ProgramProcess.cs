@@ -10,11 +10,11 @@ namespace KpiSessionSimulator.Core
         public const int QuestionsToAnswer = 8;
         public const int QuestionsToPass = 6;
 
-        public const int RouletteProbability = 35;        
-        public const int BlackjackLossesForPenalty = 3;  
-        
-        private const int ShortPauseMs = 1500;            
-        private const int LongPauseMs = 3000;             
+        public const int RouletteProbability = 35;
+        public const int BlackjackLossesForPenalty = 3;
+
+        private const int ShortPauseMs = 1500;
+        private const int LongPauseMs = 3000;
 
         private Player Player;
         private BasicTeacher Teacher;
@@ -77,10 +77,24 @@ namespace KpiSessionSimulator.Core
                     Console.WriteLine("Такої опції не існує. Викладач впихує вам перший білет!");
                 }
 
-                AskQuestion(curQuestion, i);
+                bool repeatQuestion = AskQuestion(curQuestion, i);
+
+                if (State.IsHospitalized)
+                {
+                    Console.WriteLine($"\n{Teacher.Name}: Шановний, у вас дірка вголові, схоже, що ви не зможете далі складати іспит...");
+
+                    break;
+                }
+
+                if (repeatQuestion)
+                {
+                    i--;
+                    Console.WriteLine("\nВи отримуєте нові білети, бо отримали другий шанс...");
+                    Thread.Sleep(ShortPauseMs);
+                }
             }
 
-            if (!Player.IsExpelled)
+            if (!Player.IsExpelled && !State.IsHospitalized)
             {
                 Console.WriteLine($"\nЕкзамен Завершено...");
                 Console.WriteLine($"Ваш результат: {State.CorrectAnswers} з {QuestionsToAnswer} правильних відповідей.");
@@ -97,7 +111,7 @@ namespace KpiSessionSimulator.Core
             }
         }
 
-        private void AskQuestion(Question question, int questionNum)
+        private bool AskQuestion(Question question, int questionNum)
         {
             Console.WriteLine($"\nПитання: {question.Text}");
 
@@ -114,14 +128,16 @@ namespace KpiSessionSimulator.Core
                 Console.WriteLine("\nВідповідь зараховано!");
                 State.CorrectAnswers++;
                 Player.WrongAnswersStreak = 0;
+
+                return false; 
             }
             else
             {
-                HandleWrongAnswer(questionNum);
+                return HandleWrongAnswer(questionNum);
             }
         }
 
-        private void HandleWrongAnswer(int questionNum)
+        private bool HandleWrongAnswer(int questionNum)
         {
             Console.WriteLine($"\nНеправильно! {Teacher.Name} випалює очами у вас дірку...");
             Player.WrongAnswersStreak++;
@@ -152,6 +168,8 @@ namespace KpiSessionSimulator.Core
                 if (wonMinigame)
                 {
                     Console.WriteLine("Ви виграли в мінігру! Маєте другий шанс");
+
+                    return true; 
                 }
                 else
                 {
@@ -163,9 +181,13 @@ namespace KpiSessionSimulator.Core
 
                         if (State.BlackjackLosses % BlackjackLossesForPenalty == 0)
                         {
-                            Console.WriteLine($"Ви програли в Блекджек вже {State.BlackjackLosses} рази");
+                            Console.WriteLine($"Ви програли в Блекджек вже {State.BlackjackLosses} рази.");
                             IncreaseDifficulty();
                         }
+                    }
+                    else
+                    {
+                        State.IsHospitalized = true;
                     }
                 }
             }
@@ -174,6 +196,8 @@ namespace KpiSessionSimulator.Core
                 Console.WriteLine("\nВи прийняли мінус без бою");
                 IncreaseDifficulty();
             }
+
+            return false; 
         }
 
         private void IncreaseDifficulty()
