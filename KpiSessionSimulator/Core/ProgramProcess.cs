@@ -1,73 +1,190 @@
 ﻿using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Teachers;
+using KpiSessionSimulator.Interfaces;
+using KpiSessionSimulator.Minigames;
 
 namespace KpiSessionSimulator.Core
 {
     public class ProgramProcess
     {
+        public const int QuestionsToAnswer = 8;
+        public const int QuestionsToPass = 6;
+
+        public const int RouletteProbability = 30;        
+        public const int BlackjackLossesForPenalty = 3;  
+        
+        private const int ShortPauseMs = 1500;            
+        private const int LongPauseMs = 3000;             
+
         private Player Player;
         private BasicTeacher Teacher;
         private List<Question> Questions;
         private Random Rnd = new Random();
-        public const int QuestionsToAnswer = 8;
-        public const int QuestionsToPass = 6;
+        private Roulette ExamRoulette;
+
+        private int CorrectAnswers = 0;
+        private Difficulty CurrentDifficulty = Difficulty.Easy;
+        private int BlackjackLosses = 0;
 
         public ProgramProcess(Player player, BasicTeacher teacher)
         {
             Player = player;
             Teacher = teacher;
             Questions = GenerateTestQuestions();
+            ExamRoulette = new Roulette();
         }
 
         public void Exam()
         {
             Console.WriteLine($"\nВи прийшли на екзамен до {Teacher.Name} з предмету '{Teacher.Subject}'");
-            Thread.Sleep(1500);
+            Thread.Sleep(ShortPauseMs);
             Console.WriteLine("Сподіваємося, що ви потерли шар на поляні...");
-            Thread.Sleep(1500);
-            Console.WriteLine("На столі лежать білети. Вам потрібно відповісти на 6/8 питань");
-            Thread.Sleep(3000);
+            Thread.Sleep(ShortPauseMs);
+            Console.WriteLine($"На столі лежать білети. Вам потрібно відповісти на {QuestionsToPass}/{QuestionsToAnswer} питань");
+            Thread.Sleep(LongPauseMs);
 
-            for(int i = 1; i <= QuestionsToAnswer; i++)
+            for (int i = 1; i <= QuestionsToAnswer; i++)
             {
-                if(Player.IsExpelled)
+                if (Player.IsExpelled)
                 {
                     Console.WriteLine("\nШановний, ви були відраховані! Йдіть у бурсу або на Донецький напрямок!");
-
                     break;
                 }
 
-                Console.WriteLine($"\nПитання {i} з {QuestionsToAnswer}");
+                Console.WriteLine($"\nПитання {i} з {QuestionsToAnswer} (Поточна складність: {CurrentDifficulty})");
 
-                int ticket1 = Rnd.Next(1, 30);
-                int ticket2 = Rnd.Next(1, 30);
-                int ticket3 = Rnd.Next(1, 30);
+                int ticket1 = Rnd.Next(1, 10);
+                int ticket2 = Rnd.Next(10, 20);
+                int ticket3 = Rnd.Next(20, 31);
+
+                Question q1 = GetQuestion();
+                Question q2 = GetQuestion();
+                Question q3 = GetQuestion();
 
                 Console.WriteLine($"\nОберіть білети: 1) N.{ticket1} 2) N.{ticket2} 3) N.{ticket3}");
                 string choice = Console.ReadLine();
 
-                Question curQuestion = GetQuestion();
+                Question curQuestion = q1;
+
+                if (choice == "2")
+                {
+                    curQuestion = q2;
+                }
+                else if (choice == "3")
+                {
+                    curQuestion = q3;
+                }
+                else if (choice != "1")
+                {
+                    Console.WriteLine("Такої опції не існує. Викладач впихує вам перший білет!");
+                }
+
                 AskQuestion(curQuestion, i);
+            }
+
+            if (!Player.IsExpelled)
+            {
+                Console.WriteLine($"\nЕкзамен Завершено...");
+                Console.WriteLine($"Ваш результат: {CorrectAnswers} з {QuestionsToAnswer} правильних відповідей.");
+
+                if (CorrectAnswers >= QuestionsToPass)
+                {
+                    Console.WriteLine("Вітаємо! Ви склали екзамен!");
+                }
+                else
+                {
+                    Console.WriteLine("Ви не набрали прохідний бал...");
+                    Teacher.Punish(Player);
+                }
             }
         }
 
         private void AskQuestion(Question question, int questionNum)
         {
-            Console.WriteLine($"Питання: {question.Text}");
+            Console.WriteLine($"\nПитання: {question.Text}");
 
-            for(int i = 0; i < question.Options.Count; i++)
+            for (int i = 0; i < question.Options.Count; i++)
             {
                 Console.WriteLine($"{i + 1}) {question.Options[i]}");
             }
 
-            //Додати перевірку правильної відповіді, при помилці викид мінігри
+            Console.Write("\nВаша відповідь (1-4): ");
+            string input = Console.ReadLine();
+
+            if (int.TryParse(input, out int answerIdx) && (answerIdx - 1) == question.IndexOfCorrectAnswer)
+            {
+                Console.WriteLine("\nВідповідь зараховано");
+                CorrectAnswers++;
+                Player.WrongAnswersStreak = 0;
+            }
+            else
+            {
+                Console.WriteLine($"\nНеправильно! {Teacher.Name} випалює очами у вас дірку");
+                Player.WrongAnswersStreak++;
+
+                Console.WriteLine("Відіграєтесь у мінігрі? (y/n): ");
+
+                if (Console.ReadLine()?.ToLower() == "y")
+                {
+                    bool isRoulette = Rnd.Next(1, 101) <= RouletteProbability;
+                    IMiniGame miniGame = isRoulette ? ExamRoulette : new Blackjack();
+
+                    bool wonMinigame = miniGame.Play(Player, Teacher, questionNum);
+
+                    if (wonMinigame)
+                    {
+                        Console.WriteLine("\nВи виграли в мінігру! Маєте другий шанс");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nВи програли в мінігру! Викладач починає потроху карати...");
+
+                        if (!isRoulette)
+                        {
+                            BlackjackLosses++;
+
+                            if (BlackjackLosses % BlackjackLossesForPenalty == 0)
+                            {
+                                Console.WriteLine($"\nВи програли в Блекджек вже {BlackjackLosses} рази");
+                                IncreaseDifficulty();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nВи прийняли мінус без бою");
+                    IncreaseDifficulty();
+                }
+            }
+        }
+
+        private void IncreaseDifficulty()
+        {
+            if (CurrentDifficulty == Difficulty.Easy)
+            {
+                CurrentDifficulty = Difficulty.Medium;
+                Console.WriteLine("\nНаступні питання будуть складнішими...");
+            }
+            else if (CurrentDifficulty == Difficulty.Medium)
+            {
+                CurrentDifficulty = Difficulty.Difficult;
+                Console.WriteLine("\nНаступні питання будуть найскладнішими...");
+            }
         }
 
         private Question GetQuestion()
         {
-            int idx = Rnd.Next(Questions.Count);
+            var availableQuestions = Questions.Where(q => q.Difficulty == CurrentDifficulty).ToList();
 
-            return Questions[idx];
+            if (availableQuestions.Count == 0)
+            {
+                return Questions[Rnd.Next(Questions.Count)];
+            }
+
+            int idx = Rnd.Next(availableQuestions.Count);
+
+            return availableQuestions[idx];
         }
 
         private List<Question> GenerateTestQuestions()
@@ -77,14 +194,14 @@ namespace KpiSessionSimulator.Core
                 new Question
                 {
                     Text = "Що таке інкапсуляція?",
-                    Options = new List<string> { "A) Приховування даних", "B) Спадкування", "C) Поліморфізм", "D) Тип даних" },
+                    Options = new List<string> { "Приховування даних", "Спадкування", "Поліморфізм", "Тип даних" },
                     IndexOfCorrectAnswer = 0,
                     Difficulty = Difficulty.Easy
                 },
                 new Question
                 {
                     Text = "Скільки байт займає тип int у C#?",
-                    Options = new List<string> { "A) 1", "B) 2", "C) 4", "D) 8" },
+                    Options = new List<string> { "1", "2", "4", "8" },
                     IndexOfCorrectAnswer = 2,
                     Difficulty = Difficulty.Easy
                 }

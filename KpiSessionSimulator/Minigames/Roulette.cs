@@ -8,7 +8,7 @@ namespace KpiSessionSimulator.Minigames
     {
         public const int BulletSlots = 6;
         public const int FreeSlots = 2;
-        public int CurrBullets { get; set;  }
+        public int CurrBullets { get; private set; }
 
         public Roulette()
         {
@@ -33,9 +33,9 @@ namespace KpiSessionSimulator.Minigames
             }
 
             Console.WriteLine("Ви чуєте прокрут барабану револьвера...");
-            Console.WriteLine($"\n{teacher.Name}: Якщо не вчили, може. хоч це допоможе...");
-            Console.WriteLine("(натисність будь-яку клавішу для пострілу)");
+            Console.WriteLine($"\n{teacher.Name}: Якщо не вчили, може, хоч це допоможе...");
             Console.WriteLine($"Кількість патронів: {CurrBullets}/{BulletSlots}");
+            Console.WriteLine("(натисність будь-яку клавішу для пострілу)");
             Console.ReadKey();
 
             Random rnd = new Random();
