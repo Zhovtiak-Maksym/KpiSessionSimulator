@@ -7,6 +7,8 @@ namespace KpiSessionSimulator
 {
     class Program
     {
+        private const string QuestionsFilePath = "Data/questions.json";
+
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -25,8 +27,9 @@ namespace KpiSessionSimulator
             };
 
             BasicTeacher opTeacher = new OpTeacher();
+            List<Question> questions = Services.QuestionsLoader.LoadQuestions(QuestionsFilePath);
 
-            ProgramProcess game = new ProgramProcess(currentPlayer, opTeacher);
+            ProgramProcess game = new ProgramProcess(currentPlayer, opTeacher, questions);
 
             game.Exam();
 
