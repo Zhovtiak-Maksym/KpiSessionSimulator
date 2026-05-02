@@ -2,7 +2,6 @@
 using KpiSessionSimulator.Teachers;
 using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Minigames;
-using KpiSessionSimulator.Services;
 
 namespace KpiSessionSimulator.Core
 {
@@ -35,21 +34,18 @@ namespace KpiSessionSimulator.Core
 
         public void Exam()
         {
-            Console.WriteLine($"\nВи прийшли на екзамен до {Teacher.Name} з предмету '{Teacher.Subject}'");
-            Thread.Sleep(ShortPauseMs);
-            Console.WriteLine("Сподіваємося, що ви потерли шар на поляні...");
-            Thread.Sleep(ShortPauseMs);
-            Console.WriteLine($"На столі лежать білети. Вам потрібно відповісти на {QuestionsToPass}/{QuestionsToAnswer} питань");
+            Teacher.Interact(Player, State);
+
+            if (Player.IsExpelled)
+            {
+                return;
+            }
+
+            Console.WriteLine($"\nНа столі лежать білети. Вам потрібно відповісти на {QuestionsToPass}/{QuestionsToAnswer} питань");
             Thread.Sleep(LongPauseMs);
 
             for (int i = 1; i <= QuestionsToAnswer; i++)
             {
-                if (Player.IsExpelled)
-                {
-                    Console.WriteLine("\nШановний, ви були відраховані! Йдіть у бурсу або на Донецький напрямок!");
-                    break;
-                }
-
                 Console.WriteLine($"\nПитання {i} з {QuestionsToAnswer} (Поточна складність: {State.CurrentDifficulty})");
 
                 int ticket1 = Rnd.Next(1, 10);
@@ -82,8 +78,7 @@ namespace KpiSessionSimulator.Core
 
                 if (State.IsHospitalized)
                 {
-                    Console.WriteLine($"\n{Teacher.Name}: Шановний, у вас дірка вголові, схоже, що ви не зможете далі складати іспит...");
-
+                    Console.WriteLine($"\n{Teacher.Name}: Шановний, у вас дірка в голові, схоже, що ви не зможете далі складати іспит...");
                     break;
                 }
 

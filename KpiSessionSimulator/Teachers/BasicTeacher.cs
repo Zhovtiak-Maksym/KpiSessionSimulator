@@ -1,5 +1,6 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using KpiSessionSimulator.Core;
 
 namespace KpiSessionSimulator.Teachers
 {
@@ -15,8 +16,7 @@ namespace KpiSessionSimulator.Teachers
             PunishmentStrategy = punishment;
             Subject = subject;
         }
-
-        public abstract void Interact(Player player);
+        public abstract void Interact(Player player, ExamState state);
 
         public void Punish(Player player)
         {
@@ -24,6 +24,6 @@ namespace KpiSessionSimulator.Teachers
             {
                 PunishmentStrategy.DoPunishment(player);
             }
-        }   
+        }
     }
 }
