@@ -1,0 +1,20 @@
+[
+  {
+    "Text": "За яким принципом працює структура даних Стек (Stack)?",
+    "Options": [ "FIFO (First In, First Out)", "LIFO (Last In, First Out)", "Random Access", "Key-Value Pair" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 0
+  },
+  {
+    "Text": "Яка часова складність алгоритму швидкого сортування (QuickSort) у найгіршому (найменш вдалому) випадку?",
+    "Options": [ "O(n log n)", "O(n)", "O(n^2)", "O(1)" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 3
+  },
+  {
+    "Text": "Яка базова структура даних найчастіше використовується під капотом для реалізації обходу графа в ширину (BFS)?",
+    "Options": [ "Стек (Stack)", "Черга (Queue)", "Хеш-таблиця (Hash Table)", "Бінарне дерево (Binary Tree)" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  }
+]

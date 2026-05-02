@@ -7,7 +7,7 @@ namespace KpiSessionSimulator
 {
     class Program
     {
-        private const string QuestionsFilePath = "Data/questions.json";
+        private const string QuestionsFilePath = "Data/op_questions.json";
 
         static void Main(string[] args)
         {
