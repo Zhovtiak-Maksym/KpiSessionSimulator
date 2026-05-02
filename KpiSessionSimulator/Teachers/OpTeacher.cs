@@ -9,8 +9,6 @@ namespace KpiSessionSimulator.Teachers
         public override void Interact(Player player)
         {
             Console.WriteLine($"{Name}: Давайте добийте мене вже...");
-
-            //Додати сюди завантаження файлику готових питань
         }
     }
 }

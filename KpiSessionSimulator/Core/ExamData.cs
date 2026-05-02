@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using KpiSessionSimulator.Models;
+using KpiSessionSimulator.Teachers;
 
 namespace KpiSessionSimulator.Core
 {
-    internal class ExamData
+    public class ExamData
     {
+        public BasicTeacher Teacher { get; set; }
+        public List<Question> Questions { get; set; }
     }
 }

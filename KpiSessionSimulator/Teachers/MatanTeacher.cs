@@ -10,8 +10,6 @@ namespace KpiSessionSimulator.Teachers
         public override void Interact(Player player)
         {
             Console.WriteLine($"{Name}: Шановний! Готуйтеся до мого потрійного інтегралу!");
-
-            //Додати сюди завантаження файлику готових питань
         }
     }
 }

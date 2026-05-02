@@ -2,6 +2,7 @@
 using KpiSessionSimulator.Teachers;
 using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Minigames;
+using KpiSessionSimulator.Services;
 
 namespace KpiSessionSimulator.Core
 {
@@ -23,11 +24,11 @@ namespace KpiSessionSimulator.Core
         private Roulette ExamRoulette;
         private ExamState State;
 
-        public ProgramProcess(Player player, BasicTeacher teacher)
+        public ProgramProcess(Player player, BasicTeacher teacher, List<Question> questions)
         {
             Player = player;
             Teacher = teacher;
-            Questions = GenerateTestQuestions();
+            Questions = questions;
             ExamRoulette = new Roulette();
             State = new ExamState();
         }
@@ -242,27 +243,6 @@ namespace KpiSessionSimulator.Core
             int idx = Rnd.Next(availableQuestions.Count);
 
             return availableQuestions[idx];
-        }
-
-        private List<Question> GenerateTestQuestions()
-        {
-            return new List<Question>
-            {
-                new Question
-                {
-                    Text = "Що таке інкапсуляція?",
-                    Options = new List<string> { "Приховування даних", "Спадкування", "Поліморфізм", "Тип даних" },
-                    IndexOfCorrectAnswer = 0,
-                    Difficulty = Difficulty.Easy
-                },
-                new Question
-                {
-                    Text = "Скільки байт займає тип int у C#?",
-                    Options = new List<string> { "1", "2", "4", "8" },
-                    IndexOfCorrectAnswer = 2,
-                    Difficulty = Difficulty.Easy
-                }
-            };
         }
     }
 }

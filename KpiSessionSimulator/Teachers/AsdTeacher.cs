@@ -10,8 +10,6 @@ namespace KpiSessionSimulator.Teachers
         public override void Interact(Player player)
         {
             Console.WriteLine($"{Name}: Панове, екзамен нас розсудить...");
-
-            //Додати сюди завантаження файлику готових питань
         }
     }
 }

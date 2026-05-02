@@ -1,14 +1,12 @@
 ﻿using System.Text;
 using KpiSessionSimulator.Models;
-using KpiSessionSimulator.Teachers;
 using KpiSessionSimulator.Core;
+using KpiSessionSimulator.Factories;
 
 namespace KpiSessionSimulator
 {
     class Program
     {
-        private const string QuestionsFilePath = "Data/op_questions.json";
-
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -26,10 +24,16 @@ namespace KpiSessionSimulator
                 NickName = string.IsNullOrWhiteSpace(playerName) ? "Студент" : playerName
             };
 
-            BasicTeacher opTeacher = new OpTeacher();
-            List<Question> questions = Services.QuestionsLoader.LoadQuestions(QuestionsFilePath);
+            Console.WriteLine("\nОберіть предмет для складання екзамену:");
+            Console.WriteLine("1. ОП (Скостарєв Ігор Віталійович)");
+            Console.WriteLine("2. АСД (Сулема Ольга Костянтинівна)");
+            Console.WriteLine("3. Матан (Пан Легеза)");
 
-            ProgramProcess game = new ProgramProcess(currentPlayer, opTeacher, questions);
+            string choice = Console.ReadLine();
+
+            ExamData data = ExamFactory.GetExamSetUp(choice);
+
+            ProgramProcess game = new ProgramProcess(currentPlayer, data.Teacher, data.Questions);
 
             game.Exam();
 
