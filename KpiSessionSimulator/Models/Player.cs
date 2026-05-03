@@ -3,19 +3,24 @@
     public class Player
     {
         public string NickName { get; set; }
-        public string Password { get; set; }    
-        public PlayerStats Stats { get; set; }
-        public List<string> Achievements { get; set; }
-        public string Faculty { get; set; }
-        public bool IsONSecondary { get; set; }
-        public bool IsExpelled { get; set; }
+        public string Password { get; set; }
+
+        public PlayerStats Stats;     
+        public string Faculty { get; set; }     
         public int WrongAnswersStreak { get; set; }
 
         public Player()
         {
-            Achievements = new List<string>();
             Faculty = "ФПСПМ";
             WrongAnswersStreak = 0;
+            Stats = new PlayerStats();
+            Stats.PassedExams = 0;
+            Stats.Tokens = 30;
+            Stats.Deaths = 0;
+            Stats.Achievements = new List<string>();
+            Stats.IsONSecondary = false;
+            Stats.IsExpelled = false;
+            Stats.Retakes = 0;
         }
     }
 }

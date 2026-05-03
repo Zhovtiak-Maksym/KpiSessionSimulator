@@ -4,6 +4,10 @@
     {
         public int PassedExams { get; set; }
         public int Tokens { get; set; }
-        public int Deaths { get; set; } 
+        public int Deaths { get; set; }
+        public List<string> Achievements { get; set; }
+        public bool IsONSecondary { get; set; }
+        public bool IsExpelled { get; set; }
+        public int Retakes { get; set; }
     }
 }
