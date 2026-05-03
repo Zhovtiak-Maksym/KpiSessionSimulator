@@ -13,7 +13,7 @@ namespace KpiSessionSimulator.Teachers
 
         public override void Interact(Player player, ExamState state)
         {
-            if (player.IsExpelled)
+            if (player.Stats.IsExpelled)
             {
                 Console.WriteLine($"\n{Name}: Вас було відраховано! Краще почитайте мій новий роман...");
                 return;

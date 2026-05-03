@@ -7,16 +7,16 @@ namespace KpiSessionSimulator.Punishments
     {
         public void DoPunishment(Player player)
         {
-            if (player.IsONSecondary)
+            if (player.Stats.IsONSecondary)
             {
                 Console.WriteLine("Ви не склали допку. Вас відраховано, вам краще вступити на менеджмент...");
-                player.IsExpelled = true;
+                player.Stats.IsExpelled = true;
 
                 return;
             }
 
             Console.WriteLine("Ви не склали екзамен з 'Основ Програмування', вас відправлено на допку. Готуйтеся побачити Бога...");
-            player.IsONSecondary = true;
+            player.Stats.IsONSecondary = true;
         }
     }
 }

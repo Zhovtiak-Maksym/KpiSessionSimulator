@@ -41,7 +41,7 @@ namespace KpiSessionSimulator
             Console.WriteLine("           ФІНАЛЬНА СТАТИСТИКА         ");
             Console.WriteLine("-----------------------------------------");
             Console.WriteLine($"Гравець: {currentPlayer.NickName}");
-            Console.WriteLine($"Відрахований: {(currentPlayer.IsExpelled ? "ТАК" : "НІ")}");
+            Console.WriteLine($"Відрахований: {(currentPlayer.Stats.IsExpelled ? "ТАК" : "НІ")}");
             Console.WriteLine($"Кількість смертей у мінііграх: {currentPlayer.Stats.Deaths}");
             Console.WriteLine("-----------------------------------------");
 

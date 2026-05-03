@@ -36,7 +36,7 @@ namespace KpiSessionSimulator.Core
         {
             Teacher.Interact(Player, State);
 
-            if (Player.IsExpelled)
+            if (Player.Stats.IsExpelled)
             {
                 return;
             }
@@ -90,7 +90,7 @@ namespace KpiSessionSimulator.Core
                 }
             }
 
-            if (!Player.IsExpelled && !State.IsHospitalized)
+            if (!Player.Stats.IsExpelled && !State.IsHospitalized)
             {
                 Console.WriteLine($"\nЕкзамен Завершено...");
                 Console.WriteLine($"Ваш результат: {State.CorrectAnswers} з {QuestionsToAnswer} правильних відповідей.");
