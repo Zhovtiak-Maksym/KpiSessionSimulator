@@ -20,6 +20,9 @@
             Stats.Achievements = new List<string>();
             Stats.IsONSecondary = false;
             Stats.IsExpelled = false;
+            Stats.EagleEyeCount = 0;
+            Stats.ImmunityCount = 0;
+            Stats.LoyaltyCount = 0;
         }
     }
 }
