@@ -8,6 +8,5 @@
         public List<string> Achievements { get; set; }
         public bool IsONSecondary { get; set; }
         public bool IsExpelled { get; set; }
-        public int Retakes { get; set; }
     }
 }

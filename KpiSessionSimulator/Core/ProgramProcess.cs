@@ -41,6 +41,11 @@ namespace KpiSessionSimulator.Core
                 return;
             }
 
+            if (Player.Stats.IsONSecondary)
+            {
+                State.CurrentDifficulty = Difficulty.Medium;
+            }
+
             Console.WriteLine($"\nНа столі лежать білети. Вам потрібно відповісти на {QuestionsToPass}/{QuestionsToAnswer} питань");
             Thread.Sleep(LongPauseMs);
 
@@ -98,6 +103,9 @@ namespace KpiSessionSimulator.Core
                 if (State.CorrectAnswers >= QuestionsToPass)
                 {
                     Console.WriteLine("Вітаємо! Ви склали екзамен!");
+                    Player.Stats.Tokens += 150;
+                    Player.Stats.IsONSecondary = false;
+                    Player.Stats.PassedExams++;  
                 }
                 else
                 {

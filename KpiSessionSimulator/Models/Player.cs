@@ -20,7 +20,6 @@
             Stats.Achievements = new List<string>();
             Stats.IsONSecondary = false;
             Stats.IsExpelled = false;
-            Stats.Retakes = 0;
         }
     }
 }

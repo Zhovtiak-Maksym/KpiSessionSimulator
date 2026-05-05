@@ -15,7 +15,7 @@ namespace KpiSessionSimulator.Punishments
                 return;
             }
 
-            Console.WriteLine("Ви не склали екзамен з 'Основ Програмування', вас відправлено на допку. Готуйтеся побачити Бога...");
+            Console.WriteLine("Ви не склали екзамен, вас відправлено на допку. Готуйтеся побачити Бога...");
             player.Stats.IsONSecondary = true;
         }
     }
