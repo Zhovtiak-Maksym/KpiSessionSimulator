@@ -11,5 +11,6 @@
         public int EagleEyeCount { get; set; }
         public int ImmunityCount { get; set; }
         public int LoyaltyCount { get; set; }
+        public int TrickyHandsCount { get; set; }
     }
 }

@@ -23,6 +23,7 @@
             Stats.EagleEyeCount = 0;
             Stats.ImmunityCount = 0;
             Stats.LoyaltyCount = 0;
+            Stats.TrickyHandsCount = 0;
         }
     }
 }

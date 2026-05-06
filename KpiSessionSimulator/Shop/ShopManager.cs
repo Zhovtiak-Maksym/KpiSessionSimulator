@@ -13,6 +13,9 @@ namespace KpiSessionSimulator.Shop
             perks = new List<IItemCommand>
             {
                 new EagleEye(),
+                new Immunity(),
+                new Loyalty(),
+                new TrickyHands()
             };
         }
 
