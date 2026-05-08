@@ -53,33 +53,9 @@ namespace KpiSessionSimulator.Core
             {
                 Console.WriteLine($"\nПитання {i} з {QuestionsToAnswer} (Поточна складність: {State.CurrentDifficulty})");
 
-                int ticket1 = Rnd.Next(1, 10);
-                int ticket2 = Rnd.Next(10, 20);
-                int ticket3 = Rnd.Next(20, 31);
+                Question questionToAnswer = PullTheTicket();
 
-                Question q1 = GetQuestion();
-                Question q2 = GetQuestion();
-                Question q3 = GetQuestion();
-
-                Console.WriteLine($"\nОберіть білети: 1) N.{ticket1} 2) N.{ticket2} 3) N.{ticket3}");
-                string choice = Console.ReadLine();
-
-                Question curQuestion = q1;
-
-                if (choice == "2")
-                {
-                    curQuestion = q2;
-                }
-                else if (choice == "3")
-                {
-                    curQuestion = q3;
-                }
-                else if (choice != "1")
-                {
-                    Console.WriteLine("Такої опції не існує. Викладач впихує вам перший білет!");
-                }
-
-                bool repeatQuestion = AskQuestion(curQuestion, i);
+                bool repeatQuestion = AskQuestion(questionToAnswer, i);
 
                 if (State.IsHospitalized)
                 {
@@ -115,6 +91,37 @@ namespace KpiSessionSimulator.Core
             }
         }
 
+        public Question PullTheTicket()
+        {
+            int ticket1 = Rnd.Next(1, 10);
+            int ticket2 = Rnd.Next(10, 20);
+            int ticket3 = Rnd.Next(20, 31);
+
+            Question q1 = GetQuestion();
+            Question q2 = GetQuestion();
+            Question q3 = GetQuestion();
+
+            Console.WriteLine($"\nОберіть білети: 1) N.{ticket1} 2) N.{ticket2} 3) N.{ticket3}");
+            string choice = Console.ReadLine();
+
+            Question curQuestion = q1;
+
+            if (choice == "2")
+            {
+                curQuestion = q2;
+            }
+            else if (choice == "3")
+            {
+                curQuestion = q3;
+            }
+            else if (choice != "1")
+            {
+                Console.WriteLine("Такої опції не існує. Викладач впихує вам перший білет!");
+            }
+
+            return curQuestion;
+        }
+
         private bool AskQuestion(Question question, int questionNum)
         {
             Console.WriteLine($"\nПитання: {question.Text}");
@@ -122,6 +129,22 @@ namespace KpiSessionSimulator.Core
             for (int i = 0; i < question.Options.Count; i++)
             {
                 Console.WriteLine($"{i + 1}) {question.Options[i]}");
+            }
+
+            if (Player.Stats.LoyaltyCount > 0)
+            {
+                Console.Write("\nСкористатися лояльністю (так/ні): ");
+                string choice = Console.ReadLine();
+
+                if (choice == "так")
+                {
+                    Console.WriteLine("\nВикладач бачить ваші залякані очі і дозволяє переобрати білет, але квитки на столі зміняться...");
+                    Player.Stats.LoyaltyCount--;
+
+                    Question newQuestion = PullTheTicket();
+
+                    return AskQuestion(newQuestion, questionNum);
+                }
             }
 
             Console.Write("\nВаша відповідь (1-4): ");
