@@ -91,6 +91,25 @@ namespace KpiSessionSimulator.Core
             }
         }
 
+        private Question UseLoyalty()
+        {
+            if (Player.Stats.LoyaltyCount > 0)
+            {
+                Console.Write("\nСкористатися лояльністю (так/ні): ");
+                string choice = Console.ReadLine();
+
+                if (choice == "так")
+                {
+                    Console.WriteLine("\nВикладач бачить ваші залякані очі і дозволяє переобрати білет, але квитки на столі зміняться...");
+                    Player.Stats.LoyaltyCount--;
+
+                    return PullTheTicket();
+                }
+            }
+
+            return null;
+        }
+
         public Question PullTheTicket()
         {
             int ticket1 = Rnd.Next(1, 10);
@@ -131,20 +150,11 @@ namespace KpiSessionSimulator.Core
                 Console.WriteLine($"{i + 1}) {question.Options[i]}");
             }
 
-            if (Player.Stats.LoyaltyCount > 0)
+            Question newQuestion = UseLoyalty();
+
+            if (newQuestion != null)
             {
-                Console.Write("\nСкористатися лояльністю (так/ні): ");
-                string choice = Console.ReadLine();
-
-                if (choice == "так")
-                {
-                    Console.WriteLine("\nВикладач бачить ваші залякані очі і дозволяє переобрати білет, але квитки на столі зміняться...");
-                    Player.Stats.LoyaltyCount--;
-
-                    Question newQuestion = PullTheTicket();
-
-                    return AskQuestion(newQuestion, questionNum);
-                }
+                return AskQuestion(newQuestion, questionNum);
             }
 
             Console.Write("\nВаша відповідь (1-4): ");
@@ -156,7 +166,7 @@ namespace KpiSessionSimulator.Core
                 State.CorrectAnswers++;
                 Player.WrongAnswersStreak = 0;
 
-                return false; 
+                return false;
             }
             else
             {
