@@ -95,7 +95,7 @@ namespace KpiSessionSimulator.Core
         {
             if (Player.Stats.LoyaltyCount > 0)
             {
-                Console.Write("\nСкористатися лояльністю (так/ні): ");
+                Console.Write("\nСкористатися 'Лояльністю' (так/ні): ");
                 string choice = Console.ReadLine();
 
                 if (choice == "так")
@@ -110,7 +110,42 @@ namespace KpiSessionSimulator.Core
             return null;
         }
 
-        public Question PullTheTicket()
+        private bool UseEagleEye(Question question)
+        {
+            if (Player.Stats.EagleEyeCount > 0)
+            {
+                Console.Write($"\nСкористатися 'Соколиним оком' (так/ні): ");
+                string choice = Console.ReadLine();
+
+                if (choice == "так")
+                {
+                    Console.WriteLine("\nВи спіймали білочку, яка вкрала неправильний білет");
+                    Player.Stats.EagleEyeCount--;
+
+                    List<int> wrongIdx = new List<int>();
+
+                    for (int i = 0; i < question.Options.Count; i++)
+                    {
+                        if (i != question.IndexOfCorrectAnswer && question.Options[i] != "[Прибрано]")
+                        {
+                            wrongIdx.Add(i);
+                        }
+                    }
+
+                    if (wrongIdx.Count > 0)
+                    {
+                        int randomWrongIdx = wrongIdx[Rnd.Next(wrongIdx.Count)];
+                        question.Options[randomWrongIdx] = "[Прибрано]";
+                    }
+
+                    return true; 
+                }
+            }
+
+            return false; 
+        }
+
+        private Question PullTheTicket()
         {
             int ticket1 = Rnd.Next(1, 10);
             int ticket2 = Rnd.Next(10, 20);
@@ -155,6 +190,18 @@ namespace KpiSessionSimulator.Core
             if (newQuestion != null)
             {
                 return AskQuestion(newQuestion, questionNum);
+            }
+
+            bool usedEagleEye = UseEagleEye(question);
+
+            if (usedEagleEye)
+            {
+                Console.WriteLine("\nОновлені варіанти відповідей:");
+
+                for (int i = 0; i < question.Options.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}) {question.Options[i]}");
+                }
             }
 
             Console.Write("\nВаша відповідь (1-4): ");
