@@ -96,7 +96,7 @@ namespace KpiSessionSimulator.Core
             if (Player.Stats.LoyaltyCount > 0)
             {
                 Console.Write("\nСкористатися 'Лояльністю' (так/ні): ");
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine()?.Trim().ToLower();
 
                 if (choice == "так")
                 {
@@ -115,7 +115,7 @@ namespace KpiSessionSimulator.Core
             if (Player.Stats.EagleEyeCount > 0)
             {
                 Console.Write($"\nСкористатися 'Соколиним оком' (так/ні): ");
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine()?.Trim().ToLower();
 
                 if (choice == "так")
                 {

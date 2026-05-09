@@ -15,7 +15,7 @@ namespace KpiSessionSimulator.Shop
         {
             if(player.Stats.Tokens < Price)
             {
-                Console.WriteLine($"\nНедостатньо токенов для покупки {Name}");
+                Console.WriteLine($"\nНедостатньо токенів для покупки {Name}");
                 return;
             }
 
