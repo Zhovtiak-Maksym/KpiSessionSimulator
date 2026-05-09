@@ -29,7 +29,7 @@ namespace KpiSessionSimulator.Minigames
 
             if (scoreTeacher > 21)
             {
-                return true; 
+                return true;
             }
 
             return SelectWinner(player, teacher, scorePlayer, scoreTeacher);
@@ -45,19 +45,24 @@ namespace KpiSessionSimulator.Minigames
 
                 if (input == "1")
                 {
-                    curScore += Rnd.Next(1, 11);
+                    int newCard = Rnd.Next(1, 11);
+                    curScore += newCard;
                     Console.WriteLine($"\nРахунок {player.NickName}: {curScore}");
 
                     if (curScore > 21)
                     {
-                        Console.WriteLine("Перебір!");
+                        if (player.Stats.TrickyHandsCount > 0 && UseTrickyHands(player, ref curScore, newCard))
+                        {
+                            continue; 
+                        }
 
-                        return curScore; 
+                        Console.WriteLine("Перебір!");
+                        return curScore;
                     }
                 }
                 else if (input == "2")
                 {
-                    return curScore; 
+                    return curScore;
                 }
                 else
                 {
@@ -102,6 +107,25 @@ namespace KpiSessionSimulator.Minigames
 
                 return false;
             }
+        }
+
+        private bool UseTrickyHands(Player player, ref int score, int lastCard)
+        {
+            Console.Write($"\nСкористатися 'Спритними руками' (так/ні): ");
+            string choice = Console.ReadLine()?.Trim().ToLower();
+
+            if (choice == "так")
+            {
+                player.Stats.TrickyHandsCount--;
+                score -= lastCard;
+
+                Console.WriteLine($"\nВи непомітно скидаєте карту зі столу...");
+                Console.WriteLine($"Рахунок {player.NickName}: {score}");
+
+                return true; 
+            }
+
+            return false; 
         }
     }
 }

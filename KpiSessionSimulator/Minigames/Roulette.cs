@@ -70,7 +70,7 @@ namespace KpiSessionSimulator.Minigames
         {
             if (player.Stats.ImmunityCount > 0)
             {
-                Console.Write($"\nСкористатися 'Імунітетом'(так/ні): ");
+                Console.Write($"\nСкористатися 'Імунітетом' (так/ні): ");
                 string choice = Console.ReadLine()?.Trim().ToLower();
 
                 if (choice == "так")
