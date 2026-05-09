@@ -3,6 +3,7 @@ using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Core;
 using KpiSessionSimulator.Factories;
 using KpiSessionSimulator.Services;
+using Spectre.Console;
 
 namespace KpiSessionSimulator
 {
@@ -13,35 +14,38 @@ namespace KpiSessionSimulator
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding = Encoding.UTF8;
 
-            Console.WriteLine("---------------------------------------");
-            Console.WriteLine("    Симулятор Сесії КПІ     ");
-            Console.WriteLine("---------------------------------------");
-
             Player currentPlayer = ProfileManager.LoginOrRegister();
 
-            Console.WriteLine("\nОберіть предмет для складання екзамену:");
-            Console.WriteLine("1. ОП (Скостарєв Ігор Віталійович)");
-            Console.WriteLine("2. АСД (Сулема Ольга Костянтинівна)");
-            Console.WriteLine("3. Матан (Пан Легеза)");
-
-            string choice = Console.ReadLine();
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("\n[yellow]CHOOSE SUBJECT FOR THE EXAM:[/]")
+                    .AddChoices(new[]
+                    {
+                        "OP (Skostariev)",
+                        "ASD (Sulema)",
+                        "Calculus (Leheza)"
+                    }));
 
             ExamData data = ExamFactory.GetExamSetUp(choice);
 
             ProgramProcess game = new ProgramProcess(currentPlayer, data.Teacher, data.Questions);
             game.Exam();
 
-            Console.WriteLine("\n---------------------------------------");
-            Console.WriteLine("           ФІНАЛЬНА СТАТИСТИКА         ");
-            Console.WriteLine("---------------------------------------");
-            Console.WriteLine($"Гравець: {currentPlayer.NickName}");
-            Console.WriteLine($"Відрахований: {(currentPlayer.Stats.IsExpelled ? "ТАК" : "НІ")}");
-            Console.WriteLine($"Кількість смертей у мінііграх: {currentPlayer.Stats.Deaths}");
-            Console.WriteLine($"Залишок токенів: {currentPlayer.Stats.Tokens}");
-            Console.WriteLine("---------------------------------------");
+            AnsiConsole.WriteLine();
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .Title("[yellow]FINAL STATISTICS[/]")
+                .AddColumn(new TableColumn("[grey]Metric[/]").Centered())
+                .AddColumn(new TableColumn("[grey]Value[/]").Centered());
+
+            table.AddRow("Player", $"[blue]{currentPlayer.NickName}[/]");
+            table.AddRow("Expelled", currentPlayer.Stats.IsExpelled ? "[red]YES[/]" : "[green]NO[/]");
+            table.AddRow("Minigame Deaths", $"[red]{currentPlayer.Stats.Deaths}[/]");
+            table.AddRow("Tokens Remaining", $"[gold1]{currentPlayer.Stats.Tokens}[/]");
+
+            AnsiConsole.Write(table);
 
             var allProfiles = ProfileManager.LoadProfiles();
-
             int index = allProfiles.FindIndex(p => p.NickName == currentPlayer.NickName);
 
             if (index != -1)
@@ -54,9 +58,9 @@ namespace KpiSessionSimulator
             }
 
             ProfileManager.SaveProfiles(allProfiles);
-            Console.WriteLine("\nПрогрес збережено");
+            AnsiConsole.MarkupLine("\n[bold green]Progress successfully saved![/]");
 
-            Console.WriteLine("\nНатисни будь-яку клавішу для виходу...");
+            AnsiConsole.MarkupLine("\n[grey]Press any key to exit...[/]");
             Console.ReadKey();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using KpiSessionSimulator.Models;
 using System.Text.Json;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Services
 {
@@ -21,7 +22,10 @@ namespace KpiSessionSimulator.Services
 
         public static void SaveProfiles(List<Player> profiles)
         {
-            Directory.CreateDirectory("Data");
+            if (!Directory.Exists("Data"))
+            {
+                Directory.CreateDirectory("Data");
+            }
 
             var options = new JsonSerializerOptions
             {
@@ -34,99 +38,156 @@ namespace KpiSessionSimulator.Services
 
         public static Player LoginOrRegister()
         {
-            List<Player> allPlayers = LoadProfiles();
+            List<Player> players = LoadProfiles();
 
-            Console.WriteLine("\nСимулятор Сесії КПІ");
-            Console.WriteLine("1. Увійти");
-            Console.WriteLine("2. Зареєструватись");
-            Console.Write("Ваш вибір: ");
+            AnsiConsole.Write(
+                new FigletText("KPI SESSION")
+                    .Centered()
+                    .Color(Color.Green));
 
-            string choice = Console.ReadLine();
-
-            if (choice == "1")
+            while (true)
             {
-                Console.Write("Нікнейм: ");
-                string nick = Console.ReadLine();
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("\n[yellow]CHOOSE YOUR ACTION:[/]")
+                        .PageSize(5)
+                        .AddChoices(new[] { "Login", "Register", "Exit Game" }));
 
-                Player existingPlayer = allPlayers.FirstOrDefault(p => p.NickName == nick);
-
-                if (existingPlayer != null)
+                if (choice == "Exit Game")
                 {
-                    while (true)
-                    {
-                        Console.Write("Пароль: ");
-                        string pass = Console.ReadLine();
-
-                        if (existingPlayer.Password == pass)
-                        {
-                            Console.WriteLine($"\nЗ поверненням, {nick}!");
-
-                            return existingPlayer;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Невірний пароль! Спробуйте ще раз");
-                        }
-                    }
+                    AnsiConsole.MarkupLine("[bold red]Exiting the simulator...[/]");
+                    Environment.Exit(0);
                 }
-                else
+
+                Player result = null;
+
+                if (choice == "Login")
                 {
-                    Console.WriteLine("\nГравця не знайдено! Переходимо до реєстрації...");
-
-                    return RegisterNewPlayer(allPlayers, nick);
+                    result = ProcessLogin(players);
                 }
-            }
-            else
-            {
-                Console.Write("Придумайте нікнейм: ");
-                string nick = Console.ReadLine();
+                else if (choice == "Register")
+                {
+                    result = ProcessRegister(players);
+                }
 
-                return RegisterNewPlayer(allPlayers, nick);
+                if (result != null)
+                {
+                    return result;
+                }
             }
         }
 
-        private static Player RegisterNewPlayer(List<Player> players, string nick)
+        private static Player ProcessLogin(List<Player> allPlayers)
         {
-            while (players.Any(p => p.NickName == nick))
+            string nick = AnsiConsole.Ask<string>("[green]Enter nickname (or '0' to go back):[/] ");
+
+            if (nick == "0")
             {
-                Console.WriteLine("\nЦей нікнейм вже зайнятий іншим студентом!");
-                Console.Write("Придумайте інший нікнейм: ");
-                nick = Console.ReadLine();
+                return null;
             }
 
-            Console.Write("Придумайте пароль: ");
-            string password = Console.ReadLine();
+            Player existingPlayer = allPlayers.FirstOrDefault(p => p.NickName == nick);
+
+            if (existingPlayer != null)
+            {
+                return ProcessPassword(existingPlayer);
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("\n[bold yellow]Player not found. Switching to registration...[/]");
+
+                return ProcessRegister(allPlayers, nick);
+            }
+        }
+
+        private static Player ProcessPassword(Player existingPlayer)
+        {
+            while (true)
+            {
+                string password = AnsiConsole.Prompt(
+                    new TextPrompt<string>("[blue]Enter password (or '0' to go back):[/] ")
+                        .Secret());
+
+                if (password == "0")
+                {
+                    return null;
+                }
+
+                if (existingPlayer.Password == password)
+                {
+                    AnsiConsole.MarkupLine($"\n[bold green]Welcome back, {existingPlayer.NickName}![/]");
+
+                    return existingPlayer;
+                }
+
+                AnsiConsole.MarkupLine("[bold red]Incorrect password![/]");
+            }
+        }
+
+        private static Player ProcessRegister(List<Player> players, string defaultNick = null)
+        {
+            string nick = defaultNick;
+
+            if (string.IsNullOrWhiteSpace(nick))
+            {
+                nick = AnsiConsole.Ask<string>("[green]Create a nickname (or '0' to go back):[/] ");
+            }
+
+            if (nick == "0")
+            {
+                return null;
+            }
+
+            while (players.Any(p => p.NickName == nick))
+            {
+                AnsiConsole.MarkupLine("\n[bold red]This nickname is already taken![/]");
+                nick = AnsiConsole.Ask<string>("[green]Choose another nickname (or '0' to go back):[/] ");
+
+                if (nick == "0")
+                {
+                    return null;
+                }
+            }
+
+            string password = AnsiConsole.Prompt(
+                new TextPrompt<string>("[blue]Create a password (or '0' to go back):[/] ")
+                    .Secret());
+
+            if (password == "0")
+            {
+                return null;
+            }
 
             return CreateNewPlayer(players, nick, password);
         }
 
-        private static Player CreateNewPlayer(List<Player> players, string nick, string pass)
+        private static Player CreateNewPlayer(List<Player> players, string nick, string password)
         {
             string finalNick = nick;
 
             if (string.IsNullOrWhiteSpace(finalNick))
             {
                 int counter = 1;
-                finalNick = $"Студент({counter})";
+                finalNick = $"Student_{counter}";
 
                 while (players.Any(p => p.NickName == finalNick))
                 {
                     counter++;
-                    finalNick = $"Студент({counter})";
+                    finalNick = $"Student_{counter}";
                 }
             }
 
             Player newPlayer = new Player
             {
                 NickName = finalNick,
-                Password = pass,
+                Password = password,
                 Stats = new PlayerStats()
             };
 
             players.Add(newPlayer);
             SaveProfiles(players);
 
-            Console.WriteLine($"\nПрофіль для '{finalNick}' створено");
+            AnsiConsole.MarkupLine($"\n[bold green]Profile '{finalNick}' created![/]");
 
             return newPlayer;
         }

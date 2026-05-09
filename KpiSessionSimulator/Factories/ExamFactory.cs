@@ -1,6 +1,7 @@
 ﻿using KpiSessionSimulator.Core;
 using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Teachers;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Factories
 {
@@ -17,24 +18,24 @@ namespace KpiSessionSimulator.Factories
 
             switch (choice)
             {
-                case "1":
-                    Console.WriteLine("\nЕкзамен з ОП...");
+                case "OP (Skostariev)":
+                    AnsiConsole.MarkupLine("\n[bold yellow]Starting OP exam...[/]");
                     teacher = new OpTeacher();
                     questions = Services.QuestionsLoader.LoadQuestions(OpQuestionsFilePath);
                     break;
-                case "2":
-                    Console.WriteLine("\nЕкзамен з АСД...");
+                case "ASD (Sulema)":
+                    AnsiConsole.MarkupLine("\n[bold yellow]Starting ASD exam...[/]");
                     teacher = new ASDTeacher();
                     questions = Services.QuestionsLoader.LoadQuestions(AsdQuestionsFilePath);
                     break;
-                case "3":
-                    Console.WriteLine("\nЕкзамен з Матану...");
+                case "Matan (Leheza)":
+                    AnsiConsole.MarkupLine("\n[bold yellow]Starting Matan exam...[/]");
                     teacher = new MatanTeacher();
                     questions = Services.QuestionsLoader.LoadQuestions(MatanQuestionsFilePath);
                     break;
                 default:
-                    Console.WriteLine("\nЕкзамену з такою опцією немає! Ви відправляєтесь до Пана Легези");
-                    goto case "3";
+                    AnsiConsole.MarkupLine("\n[bold red]No such option! You are sent to Mr.Leheza...[/]");
+                    goto case "Matan (Leheza)";
             }
 
             ExamData exData = new ExamData
