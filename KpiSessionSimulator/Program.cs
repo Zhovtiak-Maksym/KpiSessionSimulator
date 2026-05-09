@@ -2,6 +2,7 @@
 using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Core;
 using KpiSessionSimulator.Factories;
+using KpiSessionSimulator.Services;
 
 namespace KpiSessionSimulator
 {
@@ -16,13 +17,7 @@ namespace KpiSessionSimulator
             Console.WriteLine("    Симулятор Сесії КПІ     ");
             Console.WriteLine("---------------------------------------");
 
-            Console.Write("\nВведи своє ім'я: ");
-            string playerName = Console.ReadLine();
-
-            Player currentPlayer = new Player
-            {
-                NickName = string.IsNullOrWhiteSpace(playerName) ? "Студент" : playerName
-            };
+            Player currentPlayer = ProfileManager.LoginOrRegister();
 
             Console.WriteLine("\nОберіть предмет для складання екзамену:");
             Console.WriteLine("1. ОП (Скостарєв Ігор Віталійович)");
@@ -34,16 +29,32 @@ namespace KpiSessionSimulator
             ExamData data = ExamFactory.GetExamSetUp(choice);
 
             ProgramProcess game = new ProgramProcess(currentPlayer, data.Teacher, data.Questions);
-
             game.Exam();
 
             Console.WriteLine("\n---------------------------------------");
             Console.WriteLine("           ФІНАЛЬНА СТАТИСТИКА         ");
-            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("---------------------------------------");
             Console.WriteLine($"Гравець: {currentPlayer.NickName}");
             Console.WriteLine($"Відрахований: {(currentPlayer.Stats.IsExpelled ? "ТАК" : "НІ")}");
             Console.WriteLine($"Кількість смертей у мінііграх: {currentPlayer.Stats.Deaths}");
-            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine($"Залишок токенів: {currentPlayer.Stats.Tokens}");
+            Console.WriteLine("---------------------------------------");
+
+            var allProfiles = ProfileManager.LoadProfiles();
+
+            int index = allProfiles.FindIndex(p => p.NickName == currentPlayer.NickName);
+
+            if (index != -1)
+            {
+                allProfiles[index] = currentPlayer;
+            }
+            else
+            {
+                allProfiles.Add(currentPlayer);
+            }
+
+            ProfileManager.SaveProfiles(allProfiles);
+            Console.WriteLine("\nПрогрес збережено");
 
             Console.WriteLine("\nНатисни будь-яку клавішу для виходу...");
             Console.ReadKey();
