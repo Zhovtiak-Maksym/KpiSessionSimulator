@@ -11,7 +11,7 @@
 
         public Player()
         {
-            Faculty = "ФПСПМ";
+            Faculty = "FPSPM";
             WrongAnswersStreak = 0;
             Stats = new PlayerStats();
             Stats.PassedExams = 0;

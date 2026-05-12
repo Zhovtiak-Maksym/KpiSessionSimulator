@@ -1,46 +1,51 @@
 ﻿using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Punishments;
 using KpiSessionSimulator.Core;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Teachers
 {
     public class MatanTeacher : BasicTeacher
     {
         private const int ShortPauseMs = 1500;
-        private Random _rnd = new Random();
 
-        public MatanTeacher() : base("Пан Легеза", new TransferToFiotPenalty("ФІОТ"), "Матан") { }
+        public MatanTeacher() : base("Mr. Leheza", new TransferToFiotPenalty("FIOT"), "Calculus") { }
 
         public override void Interact(Player player, ExamState state)
         {
             if (player.Stats.IsExpelled)
             {
-                Console.WriteLine($"\n{Name}: Вас було відраховано, єдина дорога - Донбас");
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [grey]You have been expelled, the only road left is Donbas.[/]");
+
                 return;
             }
 
-            Console.WriteLine($"\nВи прийшли на екзамен до {Name}, сподіваюся ви випили святої води...");
+            AnsiConsole.MarkupLine($"\n[grey]You came to the exam to[/] [cyan]{Name}[/][grey], I hope you drank holy water...[/]");
             Thread.Sleep(ShortPauseMs);
 
             if (player.Stats.Deaths > 0)
             {
-                Console.WriteLine($"\n{Name}: Я чув, що вас забрала швидка на минулому іспиті? Сподіваюсь, сьогодні ви не знепритомнієте від моїх інтегралів!");
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [yellow]I heard the ambulance took you away at the last exam? I hope today you won't faint from my integrals![/]");
                 Thread.Sleep(ShortPauseMs);
             }
 
-            if (_rnd.Next(1, 101) <= 30)
+            if (Random.Shared.Next(1, 101) <= 30)
             {
-                Console.WriteLine($"\n{Name}: Від вас віє страхом. Підвищую складність питань");
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [darkorange]You reek of fear. Increasing the difficulty of the questions.[/]");
 
                 if (state.CurrentDifficulty == Difficulty.Easy)
+                {
                     state.CurrentDifficulty = Difficulty.Normal;
+                }
                 else if (state.CurrentDifficulty == Difficulty.Normal)
+                {
                     state.CurrentDifficulty = Difficulty.Medium;
+                }
 
                 Thread.Sleep(ShortPauseMs);
             }
 
-            Console.WriteLine($"\n{Name}: Шановний! Готуйтеся до мого потрійного інтегралу!");
+            AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [white]Dear student! Prepare for my triple integral![/]");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Punishments;
 using KpiSessionSimulator.Core;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Teachers
 {
@@ -8,28 +9,29 @@ namespace KpiSessionSimulator.Teachers
     {
         private const int ShortPauseMs = 1500;
 
-        public OpTeacher() : base("Ігор Віталійович", new SecondaryPenalty(), "ОП") { }
+        public OpTeacher() : base("Ihor Vitaliyovych", new SecondaryPenalty(), "OP") { }
 
         public override void Interact(Player player, ExamState state)
         {
             if (player.Stats.IsExpelled)
             {
-                Console.WriteLine($"\n{Name}: Йдіть з Богом. Вас вже відрахували");
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [grey]Go with God. You have already been expelled[/]");
+
                 return;
             }
 
-            Console.WriteLine($"\nВи прийшли на екзамен до {Name} з предмету '{Subject}'");
+            AnsiConsole.MarkupLine($"\n[grey]You came to the exam to[/] [cyan]{Name}[/] [grey]for the subject '{Subject}'[/]");
             Thread.Sleep(ShortPauseMs);
 
             if (player.Stats.Deaths > 0)
             {
-                Console.WriteLine($"\n{Name}: Бачу, сесія важко вам дається... Давайте я просто поставлю вам один плюс авансом, але за це ви розв'яжете 20 задачок на літ код");
-                state.CorrectAnswers = 1; 
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [yellow]I see the session is hard for you... Let me just give you one plus in advance, but for this you will solve 20 LeetCode problems[/]");
+                state.CorrectAnswers = 1;
                 Thread.Sleep(ShortPauseMs);
             }
             else
             {
-                Console.WriteLine($"\n{Name}: Давайте добийте мене вже...");
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [white]Come on, finish me already...[/]");
             }
         }
     }

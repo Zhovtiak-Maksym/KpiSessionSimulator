@@ -1,6 +1,7 @@
 ﻿using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Punishments;
 using KpiSessionSimulator.Core;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Teachers
 {
@@ -9,27 +10,28 @@ namespace KpiSessionSimulator.Teachers
         private const int PenaltyAmount = 300;
         private const int ShortPauseMs = 1500;
 
-        public ASDTeacher() : base("Ольга Костянтинівна", new TokenPenalty(PenaltyAmount), "АСД") { }
+        public ASDTeacher() : base("Olha Kostiantynivna", new TokenPenalty(PenaltyAmount), "ASD") { }
 
         public override void Interact(Player player, ExamState state)
         {
             if (player.Stats.IsExpelled)
             {
-                Console.WriteLine($"\n{Name}: Вас було відраховано! Краще почитайте мій новий роман...");
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [grey]You have been expelled! Better read my new novel...[/]");
+
                 return;
             }
 
-            Console.WriteLine($"\nВи прийшли на екзамен до {Name} з предмету '{Subject}'");
+            AnsiConsole.MarkupLine($"\n[grey]You came to the exam to[/] [cyan]{Name}[/] [grey]for the subject '{Subject}'[/]");
             Thread.Sleep(ShortPauseMs);
 
             if (player.Stats.Deaths >= 1)
             {
-                Console.WriteLine($"\n{Name}: Я відчуваю, що ви спершу пишете код, а потім будуєте блок-схему. Додаю ще одну кулю у револьвер!");
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [red]I feel that you write code first and then build the flowchart. Adding one more bullet to the revolver![/]");
                 state.CurrentDifficulty = Difficulty.Difficult;
                 Thread.Sleep(ShortPauseMs);
             }
 
-            Console.WriteLine($"\n{Name}: Панове, екзамен нас розсудить...");
+            AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [white]Gentlemen, the exam will judge us...[/]");
         }
     }
 }
