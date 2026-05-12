@@ -6,34 +6,25 @@ namespace KpiSessionSimulator.Services
 {
     public class ProfileManager
     {
-        private const string ProfilesPath = "Data/profiles.json";
-
         public static List<Player> LoadProfiles()
         {
-            if (!File.Exists(ProfilesPath))
+            if (!File.Exists(PathsMacker.Profiles))
             {
                 return new List<Player>();
             }
 
-            string jsonStr = File.ReadAllText(ProfilesPath);
+            string jsonStr = File.ReadAllText(PathsMacker.Profiles);
 
             return JsonSerializer.Deserialize<List<Player>>(jsonStr) ?? new List<Player>();
         }
 
         public static void SaveProfiles(List<Player> profiles)
         {
-            if (!Directory.Exists("Data"))
-            {
-                Directory.CreateDirectory("Data");
-            }
+            PathsMacker.EnsureDataFolderExists();
 
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-
+            var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonStr = JsonSerializer.Serialize(profiles, options);
-            File.WriteAllText(ProfilesPath, jsonStr);
+            File.WriteAllText(PathsMacker.Profiles, jsonStr);
         }
 
         public static Player LoginOrRegister()
@@ -50,7 +41,6 @@ namespace KpiSessionSimulator.Services
                 var choice = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("\n[yellow]CHOOSE YOUR ACTION:[/]")
-                        .PageSize(5)
                         .AddChoices(new[] { "Login", "Register", "Exit Game" }));
 
                 if (choice == "Exit Game")
@@ -124,7 +114,7 @@ namespace KpiSessionSimulator.Services
             }
         }
 
-        private static Player ProcessRegister(List<Player> players, string defaultNick = null)
+        private static Player ProcessRegister(List<Player> allPlayers, string defaultNick = null)
         {
             string nick = defaultNick;
 
@@ -138,7 +128,7 @@ namespace KpiSessionSimulator.Services
                 return null;
             }
 
-            while (players.Any(p => p.NickName == nick))
+            while (allPlayers.Any(p => p.NickName == nick))
             {
                 AnsiConsole.MarkupLine("\n[bold red]This nickname is already taken![/]");
                 nick = AnsiConsole.Ask<string>("[green]Choose another nickname (or '0' to go back):[/] ");
@@ -158,10 +148,10 @@ namespace KpiSessionSimulator.Services
                 return null;
             }
 
-            return CreateNewPlayer(players, nick, password);
+            return CreateNewPlayer(allPlayers, nick, password);
         }
 
-        private static Player CreateNewPlayer(List<Player> players, string nick, string password)
+        private static Player CreateNewPlayer(List<Player> players, string nick, string pass)
         {
             string finalNick = nick;
 
@@ -180,7 +170,7 @@ namespace KpiSessionSimulator.Services
             Player newPlayer = new Player
             {
                 NickName = finalNick,
-                Password = password,
+                Password = pass,
                 Stats = new PlayerStats()
             };
 

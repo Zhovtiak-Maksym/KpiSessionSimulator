@@ -10,7 +10,7 @@ namespace KpiSessionSimulator.Services
         {
             if (!File.Exists(path))
             {
-                throw new FileNotFoundException("Шлях до бази даних питань не знайдено!");
+                throw new FileNotFoundException($"Шлях до бази даних питань не знайдено: {path}");
             }
 
             string jsonStr = File.ReadAllText(path);
@@ -21,7 +21,7 @@ namespace KpiSessionSimulator.Services
                 PropertyNameCaseInsensitive = true
             };
 
-            return JsonSerializer.Deserialize<List<Question>>(jsonStr, options); 
+            return JsonSerializer.Deserialize<List<Question>>(jsonStr, options) ?? new List<Question>();
         }
     }
 }
