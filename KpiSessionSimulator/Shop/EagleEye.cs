@@ -1,28 +1,29 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Shop
 {
-    public class EagleEye: IItemCommand
+    public class EagleEye : IItemCommand
     {
-        public string Name => "Синє Око";
+        public string Name => "Blue Eye";
 
         public int Price => 300;
 
-        public string Description => "Підвищує навички зору, які ви набули з Поляни, тепер не тільки можете побачити білочку, а й неправильну відповідь";
+        public string Description => "Improves your vision due to drinking alcohol on Polyana, now you can see not only squirrels but also the wrong answer";
 
         public void Execute(Player player)
         {
-            if(player.Stats.Tokens < Price)
+            if (player.Stats.Tokens < Price)
             {
-                Console.WriteLine($"\nНедостатньо токенів для покупки {Name}");
+                AnsiConsole.MarkupLine($"\n[bold red]Not enough tokens to buy {Name}[/]");
                 return;
             }
 
             player.Stats.Tokens -= Price;
             player.Stats.EagleEyeCount++;
 
-            Console.WriteLine($"\nВи придбали {Name}");
+            AnsiConsole.MarkupLine($"\n[bold green]{Name} has been bought[/]");
         }
     }
 }

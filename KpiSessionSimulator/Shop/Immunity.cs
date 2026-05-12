@@ -1,28 +1,29 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Shop
 {
     public class Immunity : IItemCommand
     {
-        public string Name => "Імунітет";
+        public string Name => "Immunity";
 
         public int Price => 500;
 
-        public string Description => "Через маленьку стипендію, ваша травна система еволюціонвала, тепер ваш організм здатен розкласти кулю у голові на поживні речовини";
+        public string Description => "Due to a small scholarship, your digestive system has evolved, now your body can break down a bullet in the head into nutrients";
 
         public void Execute(Player player)
         {
-            if(player.Stats.Tokens < Price)
+            if (player.Stats.Tokens < Price)
             {
-                Console.WriteLine($"\nНедостатньо токенів для покупки {Name}");
+                AnsiConsole.MarkupLine($"\n[bold red]Not enough tokens to buy {Name}[/]");
                 return;
             }
 
             player.Stats.Tokens -= Price;
             player.Stats.ImmunityCount++;
 
-            Console.WriteLine($"\nВи придбали {Name}");
+            AnsiConsole.MarkupLine($"\n[bold green]{Name} has been bought[/]");
         }
     }
 }

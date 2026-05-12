@@ -2,6 +2,8 @@
 using KpiSessionSimulator.Teachers;
 using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Minigames;
+using KpiSessionSimulator.Services; 
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Core
 {
@@ -46,46 +48,45 @@ namespace KpiSessionSimulator.Core
                 State.CurrentDifficulty = Difficulty.Medium;
             }
 
-            Console.WriteLine($"\nНа столі лежать білети. Вам потрібно відповісти на {QuestionsToPass}/{QuestionsToAnswer} питань");
+            AnsiConsole.MarkupLine($"\n[grey]Tickets are on the table. You need to answer {QuestionsToPass}/{QuestionsToAnswer} questions[/]");
             Thread.Sleep(LongPauseMs);
 
             for (int i = 1; i <= QuestionsToAnswer; i++)
             {
-                Console.WriteLine($"\nПитання {i} з {QuestionsToAnswer} (Поточна складність: {State.CurrentDifficulty})");
+                AnsiConsole.MarkupLine($"\n[yellow]Question {i} of {QuestionsToAnswer}[/] [grey](Difficulty: {State.CurrentDifficulty})[/]");
 
                 Question questionToAnswer = PullTheTicket();
-
                 bool repeatQuestion = AskQuestion(questionToAnswer, i);
 
                 if (State.IsHospitalized)
                 {
-                    Console.WriteLine($"\n{Teacher.Name}: Шановний, у вас дірка в голові, схоже, що ви не зможете далі складати іспит...");
+                    AnsiConsole.MarkupLine($"\n[bold red]{Teacher.Name}: My dear student, you have a hole in your head. I think the exam is over for you...[/]");
                     break;
                 }
 
                 if (repeatQuestion)
                 {
                     i--;
-                    Console.WriteLine("\nВи отримуєте нові білети, бо отримали другий шанс...");
+                    AnsiConsole.MarkupLine("\n[cyan]You get new tickets because you won a second chance...[/]");
                     Thread.Sleep(ShortPauseMs);
                 }
             }
 
             if (!Player.Stats.IsExpelled && !State.IsHospitalized)
             {
-                Console.WriteLine($"\nЕкзамен Завершено...");
-                Console.WriteLine($"Ваш результат: {State.CorrectAnswers} з {QuestionsToAnswer} правильних відповідей.");
+                AnsiConsole.MarkupLine($"\n[bold]Exam Finished...[/]");
+                AnsiConsole.MarkupLine($"Your result: [yellow]{State.CorrectAnswers} out of {QuestionsToAnswer}[/] correct answers");
 
                 if (State.CorrectAnswers >= QuestionsToPass)
                 {
-                    Console.WriteLine("Вітаємо! Ви склали екзамен!");
+                    AnsiConsole.MarkupLine("[bold green]Congratulations! You passed the exam![/]");
                     Player.Stats.Tokens += 150;
                     Player.Stats.IsONSecondary = false;
-                    Player.Stats.PassedExams++;  
+                    Player.Stats.PassedExams++;
                 }
                 else
                 {
-                    Console.WriteLine("Ви не набрали прохідний бал...");
+                    AnsiConsole.MarkupLine("[bold red]You didn't reach the passing score...[/]");
                     Teacher.Punish(Player);
                 }
             }
@@ -95,18 +96,15 @@ namespace KpiSessionSimulator.Core
         {
             if (Player.Stats.LoyaltyCount > 0)
             {
-                Console.Write("\nСкористатися 'Лояльністю' (так/ні): ");
-                string choice = Console.ReadLine()?.Trim().ToLower();
+                bool usePerk = UIHelper.AskYesNo("\n[cyan]Use 'Loyalty' perk to change the ticket?[/]");
 
-                if (choice == "так")
+                if (usePerk)
                 {
-                    Console.WriteLine("\nВикладач бачить ваші залякані очі і дозволяє переобрати білет, але квитки на столі зміняться...");
+                    AnsiConsole.MarkupLine("\n[cyan]The teacher sees your frightened eyes and lets you pick another ticket...[/]");
                     Player.Stats.LoyaltyCount--;
-
                     return PullTheTicket();
                 }
             }
-
             return null;
         }
 
@@ -114,19 +112,17 @@ namespace KpiSessionSimulator.Core
         {
             if (Player.Stats.EagleEyeCount > 0)
             {
-                Console.Write($"\nСкористатися 'Соколиним оком' (так/ні): ");
-                string choice = Console.ReadLine()?.Trim().ToLower();
+                bool usePerk = UIHelper.AskYesNo("\n[cyan]Use 'Blue Eye' perk?[/]");
 
-                if (choice == "так")
+                if (usePerk)
                 {
-                    Console.WriteLine("\nВи спіймали білочку, яка вкрала неправильний білет");
+                    AnsiConsole.MarkupLine("\n[cyan]You caught a squirrel that stole one wrong answer![/]");
                     Player.Stats.EagleEyeCount--;
 
                     List<int> wrongIdx = new List<int>();
-
                     for (int i = 0; i < question.Options.Count; i++)
                     {
-                        if (i != question.IndexOfCorrectAnswer && question.Options[i] != "[Прибрано]")
+                        if (i != question.IndexOfCorrectAnswer && question.Options[i] != "[REMOVED]")
                         {
                             wrongIdx.Add(i);
                         }
@@ -135,84 +131,64 @@ namespace KpiSessionSimulator.Core
                     if (wrongIdx.Count > 0)
                     {
                         int randomWrongIdx = wrongIdx[Rnd.Next(wrongIdx.Count)];
-                        question.Options[randomWrongIdx] = "[Прибрано]";
+                        question.Options[randomWrongIdx] = "[REMOVED]";
                     }
-
-                    return true; 
+                    return true;
                 }
             }
-
-            return false; 
+            return false;
         }
 
         private Question PullTheTicket()
         {
-            int ticket1 = Rnd.Next(1, 10);
-            int ticket2 = Rnd.Next(10, 20);
-            int ticket3 = Rnd.Next(20, 31);
+            int t1 = Rnd.Next(1, 10);
+            int t2 = Rnd.Next(10, 20);
+            int t3 = Rnd.Next(20, 31);
 
             Question q1 = GetQuestion();
             Question q2 = GetQuestion();
             Question q3 = GetQuestion();
 
-            Console.WriteLine($"\nОберіть білети: 1) N.{ticket1} 2) N.{ticket2} 3) N.{ticket3}");
-            string choice = Console.ReadLine();
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[yellow]Choose a ticket:[/]")
+                    .AddChoices(new[] { $"Ticket N.{t1}", $"Ticket N.{t2}", $"Ticket N.{t3}" }));
 
-            Question curQuestion = q1;
-
-            if (choice == "2")
-            {
-                curQuestion = q2;
-            }
-            else if (choice == "3")
-            {
-                curQuestion = q3;
-            }
-            else if (choice != "1")
-            {
-                Console.WriteLine("Такої опції не існує. Викладач впихує вам перший білет!");
-            }
-
-            return curQuestion;
+            if (choice.Contains(t1.ToString())) return q1;
+            if (choice.Contains(t2.ToString())) return q2;
+            return q3;
         }
 
         private bool AskQuestion(Question question, int questionNum)
         {
-            Console.WriteLine($"\nПитання: {question.Text}");
-
-            for (int i = 0; i < question.Options.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}) {question.Options[i]}");
-            }
+            var panel = new Panel($"[bold]{question.Text}[/]")
+                .BorderColor(Color.Yellow)
+                .Padding(1, 1);
+            AnsiConsole.Write(panel);
 
             Question newQuestion = UseLoyalty();
+            if (newQuestion != null) return AskQuestion(newQuestion, questionNum);
 
-            if (newQuestion != null)
+            UseEagleEye(question);
+
+            var displayOptions = new List<string>();
+            for (int i = 0; i < question.Options.Count; i++)
             {
-                return AskQuestion(newQuestion, questionNum);
+                displayOptions.Add($"{i + 1}. {question.Options[i]}");
             }
 
-            bool usedEagleEye = UseEagleEye(question);
+            var answerStr = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[yellow]Select your answer:[/]")
+                    .AddChoices(displayOptions));
 
-            if (usedEagleEye)
+            int answerIdx = int.Parse(answerStr.Substring(0, 1)) - 1;
+
+            if (answerIdx == question.IndexOfCorrectAnswer)
             {
-                Console.WriteLine("\nОновлені варіанти відповідей:");
-
-                for (int i = 0; i < question.Options.Count; i++)
-                {
-                    Console.WriteLine($"{i + 1}) {question.Options[i]}");
-                }
-            }
-
-            Console.Write("\nВаша відповідь (1-4): ");
-            string input = Console.ReadLine();
-
-            if (int.TryParse(input, out int answerIdx) && (answerIdx - 1) == question.IndexOfCorrectAnswer)
-            {
-                Console.WriteLine("\nВідповідь зараховано!");
+                AnsiConsole.MarkupLine("\n[bold green]Correct answer![/]");
                 State.CorrectAnswers++;
                 Player.WrongAnswersStreak = 0;
-
                 return false;
             }
             else
@@ -223,49 +199,43 @@ namespace KpiSessionSimulator.Core
 
         private bool HandleWrongAnswer(int questionNum)
         {
-            Console.WriteLine($"\nНеправильно! {Teacher.Name} випалює очами у вас дірку...");
+            AnsiConsole.MarkupLine($"\n[bold red]Wrong! {Teacher.Name} burns a hole in you with their eyes...[/]");
             Player.WrongAnswersStreak++;
 
-            Console.Write("Відіграєтесь у мінігрі? (так/ні): ");
+            bool playMinigame = UIHelper.AskYesNo("\n[red]Play a minigame to survive?[/]");
 
-            if (Console.ReadLine()?.ToLower() == "так")
+            if (playMinigame)
             {
                 bool isRoulette = Rnd.Next(1, 101) <= RouletteProbability;
                 IMiniGame miniGame = isRoulette ? ExamRoulette : new Blackjack();
 
-                Console.WriteLine("\nПідготовка до міні-гри...");
+                AnsiConsole.MarkupLine("\n[grey]Preparing for the minigame...[/]");
                 Thread.Sleep(ShortPauseMs);
 
-                Console.WriteLine("\n-------------------------------------");
-                Console.WriteLine(isRoulette ? "      МІНІГРА: РУЛЕТКА      " : "          МІНІГРА: БЛЕКДЖЕК           ");
-                Console.WriteLine("-------------------------------------");
+                AnsiConsole.Write(new Rule(isRoulette ? "[red]MINIGAME: ROULETTE[/]" : "[red]MINIGAME: BLACKJACK[/]").RuleStyle("red"));
                 Thread.Sleep(ShortPauseMs);
 
                 bool wonMinigame = miniGame.Play(Player, Teacher, questionNum);
 
                 Thread.Sleep(ShortPauseMs);
-                Console.WriteLine("\n-------------------------------------");
-                Console.WriteLine("        Повернення до екзамену...         ");
-                Console.WriteLine("--------------------------------------");
+                AnsiConsole.Write(new Rule("[grey]Returning to the exam...[/]").RuleStyle("grey"));
                 Thread.Sleep(ShortPauseMs);
 
                 if (wonMinigame)
                 {
-                    Console.WriteLine("Ви виграли в мінігру! Маєте другий шанс");
-
-                    return true; 
+                    AnsiConsole.MarkupLine("[bold green]You won the minigame! You get a second chance[/]");
+                    return true;
                 }
                 else
                 {
-                    Console.WriteLine("Ви програли в мінігру! Викладач починає карати...");
+                    AnsiConsole.MarkupLine("[bold red]You lost the minigame! The teacher starts punishing you...[/]");
 
                     if (!isRoulette)
                     {
                         State.BlackjackLosses++;
-
                         if (State.BlackjackLosses % BlackjackLossesForPenalty == 0)
                         {
-                            Console.WriteLine($"Ви програли в Блекджек вже {State.BlackjackLosses} рази.");
+                            AnsiConsole.MarkupLine($"[red]You lost Blackjack {State.BlackjackLosses} times[/]");
                             IncreaseDifficulty();
                         }
                     }
@@ -277,11 +247,10 @@ namespace KpiSessionSimulator.Core
             }
             else
             {
-                Console.WriteLine("\nВи прийняли мінус без бою");
+                AnsiConsole.MarkupLine("\n[grey]You took the minus without a fight[/]");
                 IncreaseDifficulty();
             }
-
-            return false; 
+            return false;
         }
 
         private void IncreaseDifficulty()
@@ -290,26 +259,22 @@ namespace KpiSessionSimulator.Core
             {
                 case Difficulty.Easy:
                     State.CurrentDifficulty = Difficulty.Normal;
-                    Console.WriteLine("\nСкладність підвищено до 'Нормальної'");
+                    AnsiConsole.MarkupLine("\n[yellow]Difficulty increased to 'Normal'[/]");
                     break;
-
                 case Difficulty.Normal:
                     State.CurrentDifficulty = Difficulty.Medium;
-                    Console.WriteLine("\nВикладач починає ставити додаткові питання. Складність 'Середня'");
+                    AnsiConsole.MarkupLine("\n[darkorange]The teacher asks additional questions. Difficulty is 'Medium'[/]");
                     break;
-
                 case Difficulty.Medium:
                     State.CurrentDifficulty = Difficulty.Difficult;
-                    Console.WriteLine("\nВикладач хмуриться. Наступні питання будуть дуже складними!");
+                    AnsiConsole.MarkupLine("\n[red]The teacher frowns. The next questions will be very difficult![/]");
                     break;
-
                 case Difficulty.Difficult:
                     State.CurrentDifficulty = Difficulty.DeathMode;
-                    Console.WriteLine("\nDeath Mode! Моліться Богу");
+                    AnsiConsole.MarkupLine("\n[bold red]DEATH MODE! Pray to God.[/]");
                     break;
-
                 case Difficulty.DeathMode:
-                    Console.WriteLine("\nСкладність вже максимальна. Атмосфера наганяє думки про відрахування...");
+                    AnsiConsole.MarkupLine("\n[bold darkred]Difficulty is maxed out. Dopka is imminent...[/]");
                     break;
             }
         }
@@ -317,14 +282,8 @@ namespace KpiSessionSimulator.Core
         private Question GetQuestion()
         {
             var availableQuestions = Questions.Where(q => q.Difficulty == State.CurrentDifficulty).ToList();
-
-            if (availableQuestions.Count == 0)
-            {
-                return Questions[Rnd.Next(Questions.Count)];
-            }
-
+            if (availableQuestions.Count == 0) return Questions[Rnd.Next(Questions.Count)];
             int idx = Rnd.Next(availableQuestions.Count);
-
             return availableQuestions[idx];
         }
     }

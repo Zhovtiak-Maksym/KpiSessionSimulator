@@ -1,6 +1,8 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Teachers;
+using KpiSessionSimulator.Services; 
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Minigames
 {
@@ -18,50 +20,50 @@ namespace KpiSessionSimulator.Minigames
 
         public bool Play(Player player, BasicTeacher teacher, int numberOfQuestion)
         {
-            Console.WriteLine("\nВи чуєте прокрут барабану револьвера...");
-            Console.WriteLine($"\n{teacher.Name}: Якщо не вчили, може хоч це допоможе...");
-            Console.WriteLine($"Кількість патронів: {CurrBullets}/{BulletSlots}");
+            AnsiConsole.MarkupLine("\n[grey]You hear the spin of the revolver cylinder[/]");
+            AnsiConsole.MarkupLine($"\n[red]{teacher.Name}: Maby this will help if you didn`t study properly...[/]");
+            AnsiConsole.MarkupLine($"[darkorange]Bullet count: {CurrBullets}/{BulletSlots}[/]");
 
             bool hasImmunity = UseImmunity(player);
 
-            Console.WriteLine("\n(натисніть будь-яку клавішу для пострілу)");
-            Console.ReadKey(true); 
+            AnsiConsole.MarkupLine("\n[grey](Press any key to pull the trigger)[/]");
+            Console.ReadKey(true);
 
             bool isShot = CheckShot();
 
             if (!isShot)
             {
-                Console.WriteLine("\nЧутно металевий 'клац'...");
-                Console.WriteLine($"\n{teacher.Name}: Сьогодні ваш другий День народження!");
+                AnsiConsole.MarkupLine("\n[bold grey]You hear a metallic 'click'[/]");
+                AnsiConsole.MarkupLine($"\n[bold green]{teacher.Name}: Today is your second birthday![/]");
 
                 if (CurrBullets < MaxBullets)
                 {
                     CurrBullets++;
-                    Console.WriteLine($"Кількість патронів у рулетці збільшено до {CurrBullets}");
+                    AnsiConsole.MarkupLine($"[darkorange]The number of bullets in the roulette has been increased to {CurrBullets}[/]");
                 }
 
-                return true; 
+                return true;
             }
             else
             {
-                Console.WriteLine("\nПостріл...");
+                AnsiConsole.MarkupLine("\n[bold red]BANG![/]");
                 Thread.Sleep(ShortPause);
 
                 if (hasImmunity)
                 {
-                    Console.WriteLine("Куля у вашій голові починає розчинятися, і рана загоюється...");
+                    AnsiConsole.MarkupLine("[cyan]The bullet in your head begins to dissolve, and the wound heals[/]");
 
-                    return true; 
+                    return true;
                 }
                 else
                 {
-                    Console.WriteLine($"Вас забирає швидка. {teacher.Name} тихо ховає револьвер у стіл.");
+                    AnsiConsole.MarkupLine($"[bold darkred]An ambulance takes you away! {teacher.Name} quietly hides the revolver in the desk[/]");
 
                     PlayerStats curStats = player.Stats;
                     curStats.Deaths++;
                     player.Stats = curStats;
 
-                    return false; 
+                    return false;
                 }
             }
         }
@@ -70,10 +72,9 @@ namespace KpiSessionSimulator.Minigames
         {
             if (player.Stats.ImmunityCount > 0)
             {
-                Console.Write($"\nСкористатися 'Імунітетом' (так/ні): ");
-                string choice = Console.ReadLine()?.Trim().ToLower();
+                bool usePerk = UIHelper.AskYesNo("\n[cyan]Use 'Immunity' perk?[/]");
 
-                if (choice == "так")
+                if (usePerk)
                 {
                     player.Stats.ImmunityCount--;
 
@@ -90,7 +91,7 @@ namespace KpiSessionSimulator.Minigames
 
             if (rnd.Next(1, BulletSlots + 1) <= CurrBullets)
             {
-                return true; 
+                return true;
             }
 
             return false;

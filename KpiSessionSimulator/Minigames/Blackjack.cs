@@ -1,72 +1,70 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Teachers;
+using KpiSessionSimulator.Services; 
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Minigames
 {
     public class Blackjack : IMiniGame
     {
         private Random Rnd = new Random();
+        private const int ShortPauseMs = 1500;
 
         public bool Play(Player player, BasicTeacher teacher, int numberOfQuestion)
         {
             int scorePlayer = Rnd.Next(1, 11);
             int scoreTeacher = Rnd.Next(1, 11);
 
-            Console.WriteLine($"\nРахунок {player.NickName}: {scorePlayer}");
-            Console.WriteLine($"Рахунок {teacher.Name}: {scoreTeacher}");
+            AnsiConsole.MarkupLine($"\n[green]{player.NickName}'s score:[/] [bold]{scorePlayer}[/]");
+            AnsiConsole.MarkupLine($"[red]{teacher.Name}'s score:[/] [bold]{scoreTeacher}[/]");
 
             scorePlayer = PlayerTurn(player, scorePlayer);
 
-            if (scorePlayer > 21)
-            {
-                return false;
-            }
+            if (scorePlayer > 21) return false;
 
-            Console.WriteLine($"\n{teacher.Name} набирає");
+            AnsiConsole.MarkupLine($"\n[red]{teacher.Name} is drawing cards...[/]");
+            Thread.Sleep(ShortPauseMs);
 
             scoreTeacher = TeacherTurn(teacher, scoreTeacher);
 
-            if (scoreTeacher > 21)
-            {
-                return true;
-            }
+            if (scoreTeacher > 21) return true;
 
             return SelectWinner(player, teacher, scorePlayer, scoreTeacher);
         }
-
 
         private int PlayerTurn(Player player, int curScore)
         {
             while (true)
             {
-                Console.WriteLine("\nБільше, чи 'Чек'?(1/2)");
-                string input = Console.ReadLine();
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("\n[yellow]Choose your action:[/]")
+                        .AddChoices(new[] { "Hit", "Stand" }));
 
-                if (input == "1")
+                if (choice == "Hit")
                 {
                     int newCard = Rnd.Next(1, 11);
                     curScore += newCard;
-                    Console.WriteLine($"\nРахунок {player.NickName}: {curScore}");
+
+                    AnsiConsole.MarkupLine($"\n[grey]You draw a card: {newCard}[/]");
+                    AnsiConsole.MarkupLine($"[green]{player.NickName}'s score:[/] [bold]{curScore}[/]");
 
                     if (curScore > 21)
                     {
                         if (player.Stats.TrickyHandsCount > 0 && UseTrickyHands(player, ref curScore, newCard))
                         {
-                            continue; 
+                            continue;
                         }
 
-                        Console.WriteLine("Перебір!");
+                        AnsiConsole.MarkupLine("\n[bold red]BUST! You exceeded 21[/]");
                         return curScore;
                     }
                 }
-                else if (input == "2")
+                else if (choice == "Stand")
                 {
+                    AnsiConsole.MarkupLine($"\n[grey]You stand with a score of {curScore}[/]");
                     return curScore;
-                }
-                else
-                {
-                    Console.WriteLine("Такої опції не існує!");
                 }
             }
         }
@@ -75,57 +73,58 @@ namespace KpiSessionSimulator.Minigames
         {
             while (curScore < 17)
             {
-                curScore += Rnd.Next(1, 11);
-                Console.WriteLine($"\nРахунок {teacher.Name}: {curScore}");
+                Thread.Sleep(ShortPauseMs);
+                int newCard = Rnd.Next(1, 11);
+                curScore += newCard;
+
+                AnsiConsole.MarkupLine($"[grey]{teacher.Name} draws a card: {newCard}[/]");
+                AnsiConsole.MarkupLine($"[red]{teacher.Name}'s score:[/] [bold]{curScore}[/]");
 
                 if (curScore > 21)
                 {
-                    Console.WriteLine($"У {teacher.Name} перебір. Перемога!");
-
+                    AnsiConsole.MarkupLine($"\n[bold green]{teacher.Name} BUSTED! You win![/]");
                     return curScore;
                 }
             }
 
+            AnsiConsole.MarkupLine($"\n[grey]{teacher.Name} stands with a score of {curScore}[/]");
             return curScore;
         }
 
         private bool SelectWinner(Player player, BasicTeacher teacher, int scorePlayer, int scoreTeacher)
         {
-            Console.WriteLine("\nРезультати:");
-            Console.WriteLine($"{player.NickName}: {scorePlayer}");
-            Console.WriteLine($"{teacher.Name}: {scoreTeacher}");
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new Rule("[yellow]FINAL RESULTS[/]").RuleStyle("yellow"));
+
+            AnsiConsole.MarkupLine($"[green]{player.NickName}:[/] {scorePlayer}");
+            AnsiConsole.MarkupLine($"[red]{teacher.Name}:[/] {scoreTeacher}");
 
             if (scorePlayer > scoreTeacher)
             {
-                Console.WriteLine("Перемога!");
-
+                AnsiConsole.MarkupLine("\n[bold green]You win the hand![/]");
                 return true;
             }
             else
             {
-                Console.WriteLine("Викладач переміг. Оцінка знижена");
-
+                AnsiConsole.MarkupLine("\n[bold red]The teacher wins. Your grade is lowered![/]");
                 return false;
             }
         }
 
         private bool UseTrickyHands(Player player, ref int score, int lastCard)
         {
-            Console.Write($"\nСкористатися 'Спритними руками' (так/ні): ");
-            string choice = Console.ReadLine()?.Trim().ToLower();
+            bool usePerk = UIHelper.AskYesNo("\n[cyan]Use 'Tricky Hands' perk to drop the last card?[/]");
 
-            if (choice == "так")
+            if (usePerk)
             {
                 player.Stats.TrickyHandsCount--;
                 score -= lastCard;
 
-                Console.WriteLine($"\nВи непомітно скидаєте карту зі столу...");
-                Console.WriteLine($"Рахунок {player.NickName}: {score}");
-
-                return true; 
+                AnsiConsole.MarkupLine($"\n[cyan]You sneakily drop the card ({lastCard}) off the table...[/]");
+                AnsiConsole.MarkupLine($"[green]{player.NickName}'s score:[/] [bold]{score}[/]");
+                return true;
             }
-
-            return false; 
+            return false;
         }
     }
 }

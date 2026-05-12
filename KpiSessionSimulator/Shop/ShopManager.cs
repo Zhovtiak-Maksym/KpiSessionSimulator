@@ -1,12 +1,13 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Shop
 {
     public class ShopManager
     {
         private List<IItemCommand> perks;
-        public const int ShortPause = 1000;
+        public const int ShortPause = 1500;
 
         public ShopManager()
         {
@@ -21,40 +22,56 @@ namespace KpiSessionSimulator.Shop
 
         public void ShopLife(Player player)
         {
-            while(true)
+            while (true)
             {
-                Console.WriteLine("\nМагазин перків:");
+                AnsiConsole.Clear();
 
-                int counter = 1;
+                AnsiConsole.Write(
+                    new FigletText("BLACK MARKET")
+                        .Centered()
+                        .Color(Color.Purple));
+
+                AnsiConsole.MarkupLine($"\n[bold]Current Balance:[/] [gold1]{player.Stats.Tokens} tokens[/]\n");
+
+                var table = new Table()
+                    .Border(TableBorder.Rounded)
+                    .BorderColor(Color.Purple)
+                    .Title("[yellow]Available Perks[/]");
+
+                table.AddColumn(new TableColumn("[green]Perk[/]").Centered());
+                table.AddColumn(new TableColumn("[gold1]Price[/]").Centered());
+                table.AddColumn("[grey]Description[/]");
+
+                var choices = new List<string>();
+
                 foreach (var item in perks)
                 {
-                    Console.WriteLine($"{counter++}. {item.Name} - {item.Price} токенів ({item.Description})");
+                    table.AddRow($"[bold]{item.Name}[/]", $"[gold1]{item.Price}[/]", item.Description);
+                    choices.Add(item.Name);
                 }
 
-                Console.Write("\nВведіть номер перку для покупки (0 - вихід): ");
-                string input = Console.ReadLine();
+                choices.Add("Exit Shop");
 
-                if (int.TryParse(input, out int choice))
+                AnsiConsole.Write(table);
+
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("\n[yellow]Select a perk to buy:[/]")
+                        .AddChoices(choices));
+
+                if (choice == "Exit Shop")
                 {
-                    if (choice == 0)
-                    {
-                        Console.WriteLine("\nВихід з Магазину...");
-                        break;
-                    }
-                    else if (choice > 0 && choice <= perks.Count)
-                    {
-                        var selectedPerk = perks[choice - 1];
-                        selectedPerk.Execute(player);
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nПерку під таким номером не існує...");
-                    }
+                    AnsiConsole.MarkupLine("\n[grey]Leaving the Black Market...[/]");
+                    Thread.Sleep(ShortPause);
+
+                    break;
                 }
-                else
-                {
-                    Console.WriteLine("\nБудь ласка, введіть число!");
-                }
+
+                var selectedPerk = perks.First(p => p.Name == choice);
+                selectedPerk.Execute(player);
+
+                AnsiConsole.MarkupLine("\n[grey](Press any key to continue)[/]");
+                Console.ReadKey(true);
             }
         }
     }

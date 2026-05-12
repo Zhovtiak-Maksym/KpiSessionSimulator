@@ -1,28 +1,29 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Shop
 {
     public class Loyalty : IItemCommand
     {
-        public string Name => "Лояльність";
+        public string Name => "Loyalty";
 
         public int Price => 200;
 
-        public string Description => "Ви нарешті прийняли душ, ваша харизма та зовнішній вигляд значно покращилися, викладач не стримається і дасть право на зміну білету";
+        public string Description => "You finally took a shower, your charisma and appearance have significantly improved, the teacher will definitely give you the right to change the ticket";
 
         public void Execute(Player player)
         {
-            if(player.Stats.Tokens < Price)
+            if (player.Stats.Tokens < Price)
             {
-                Console.WriteLine($"\nНедостатньо токенів для покупки {Name}");
+                AnsiConsole.MarkupLine($"\n[bold red]Not enough tokens to buy {Name}[/]");
                 return;
             }
 
             player.Stats.Tokens -= Price;
             player.Stats.LoyaltyCount++;
 
-            Console.WriteLine($"\nВи придбали {Name}");
+            AnsiConsole.MarkupLine($"\n[bold green]{Name} has been bought[/]"); ;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace KpiSessionSimulator.Punishments
                 curStats.Tokens = 0;
             }
 
-            Console.WriteLine($"Ви відправляєтесь на пересдачу, втративши {_penaltyAmount} токенів!");
+            Console.WriteLine($"Ви втратили {_penaltyAmount} токенів!");
             player.Stats = curStats;
         }
     }
