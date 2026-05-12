@@ -1,5 +1,6 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Punishments
 {
@@ -15,14 +16,14 @@ namespace KpiSessionSimulator.Punishments
         public void DoPunishment(Player player)
         {
             PlayerStats curStats = player.Stats;
-            curStats.Tokens -= _penaltyAmount; 
+            curStats.Tokens -= _penaltyAmount;
 
             if (curStats.Tokens < 0)
             {
                 curStats.Tokens = 0;
             }
 
-            Console.WriteLine($"Ви втратили {_penaltyAmount} токенів!");
+            AnsiConsole.MarkupLine($"\n[bold red]You lost {_penaltyAmount} tokens![/]");
             player.Stats = curStats;
         }
     }

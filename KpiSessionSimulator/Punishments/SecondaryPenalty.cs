@@ -1,5 +1,6 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Punishments
 {
@@ -9,13 +10,13 @@ namespace KpiSessionSimulator.Punishments
         {
             if (player.Stats.IsONSecondary)
             {
-                Console.WriteLine("Ви не склали допку. Вас відраховано, вам краще вступити на менеджмент...");
+                AnsiConsole.MarkupLine("\n[bold red]You failed the retake. You are expelled, you better enroll in management...[/]");
                 player.Stats.IsExpelled = true;
 
                 return;
             }
 
-            Console.WriteLine("Ви не склали екзамен, вас відправлено на допку. Готуйтеся побачити Бога...");
+            AnsiConsole.MarkupLine("\n[bold darkorange]You failed the exam, you are sent to retake. Prepare to meet God...[/]");
             player.Stats.IsONSecondary = true;
         }
     }

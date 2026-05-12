@@ -1,5 +1,6 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using Spectre.Console;
 
 namespace KpiSessionSimulator.Punishments
 {
@@ -14,7 +15,7 @@ namespace KpiSessionSimulator.Punishments
 
         public void DoPunishment(Player player)
         {
-            Console.WriteLine($"Тебе вигнали з 'рідного' дому на {_transferToFaculty}! Подумай про своє майбутнє...");
+            AnsiConsole.MarkupLine($"\n[bold darkred]You were kicked out of your 'home' to {_transferToFaculty}! Think about your future...[/]");
             player.Faculty = _transferToFaculty;
         }
     }

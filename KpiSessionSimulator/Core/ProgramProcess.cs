@@ -2,7 +2,7 @@
 using KpiSessionSimulator.Teachers;
 using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Minigames;
-using KpiSessionSimulator.Services; 
+using KpiSessionSimulator.Services;
 using Spectre.Console;
 
 namespace KpiSessionSimulator.Core
@@ -25,6 +25,9 @@ namespace KpiSessionSimulator.Core
         private Roulette ExamRoulette;
         private ExamState State;
 
+        private PerkManager PerkHandler;
+        private DifficultyManager DiffManager;
+
         public ProgramProcess(Player player, BasicTeacher teacher, List<Question> questions)
         {
             Player = player;
@@ -32,12 +35,14 @@ namespace KpiSessionSimulator.Core
             Questions = questions;
             ExamRoulette = new Roulette();
             State = new ExamState();
+
+            PerkHandler = new PerkManager();
+            DiffManager = new DifficultyManager();
         }
 
         public void Exam()
         {
             Teacher.Interact(Player, State);
-
             if (Player.Stats.IsExpelled)
             {
                 return;
@@ -61,6 +66,7 @@ namespace KpiSessionSimulator.Core
                 if (State.IsHospitalized)
                 {
                     AnsiConsole.MarkupLine($"\n[bold red]{Teacher.Name}: My dear student, you have a hole in your head. I think the exam is over for you...[/]");
+
                     break;
                 }
 
@@ -72,71 +78,31 @@ namespace KpiSessionSimulator.Core
                 }
             }
 
-            if (!Player.Stats.IsExpelled && !State.IsHospitalized)
-            {
-                AnsiConsole.MarkupLine($"\n[bold]Exam Finished...[/]");
-                AnsiConsole.MarkupLine($"Your result: [yellow]{State.CorrectAnswers} out of {QuestionsToAnswer}[/] correct answers");
-
-                if (State.CorrectAnswers >= QuestionsToPass)
-                {
-                    AnsiConsole.MarkupLine("[bold green]Congratulations! You passed the exam![/]");
-                    Player.Stats.Tokens += 150;
-                    Player.Stats.IsONSecondary = false;
-                    Player.Stats.PassedExams++;
-                }
-                else
-                {
-                    AnsiConsole.MarkupLine("[bold red]You didn't reach the passing score...[/]");
-                    Teacher.Punish(Player);
-                }
-            }
+            FinishExam();
         }
 
-        private Question UseLoyalty()
+        private void FinishExam()
         {
-            if (Player.Stats.LoyaltyCount > 0)
+            if (Player.Stats.IsExpelled || State.IsHospitalized)
             {
-                bool usePerk = UIHelper.AskYesNo("\n[cyan]Use 'Loyalty' perk to change the ticket?[/]");
-
-                if (usePerk)
-                {
-                    AnsiConsole.MarkupLine("\n[cyan]The teacher sees your frightened eyes and lets you pick another ticket...[/]");
-                    Player.Stats.LoyaltyCount--;
-                    return PullTheTicket();
-                }
+                return;
             }
-            return null;
-        }
 
-        private bool UseEagleEye(Question question)
-        {
-            if (Player.Stats.EagleEyeCount > 0)
+            AnsiConsole.MarkupLine($"\n[bold]Exam Finished...[/]");
+            AnsiConsole.MarkupLine($"Your result: [yellow]{State.CorrectAnswers} out of {QuestionsToAnswer}[/] correct answers");
+
+            if (State.CorrectAnswers >= QuestionsToPass)
             {
-                bool usePerk = UIHelper.AskYesNo("\n[cyan]Use 'Blue Eye' perk?[/]");
-
-                if (usePerk)
-                {
-                    AnsiConsole.MarkupLine("\n[cyan]You caught a squirrel that stole one wrong answer![/]");
-                    Player.Stats.EagleEyeCount--;
-
-                    List<int> wrongIdx = new List<int>();
-                    for (int i = 0; i < question.Options.Count; i++)
-                    {
-                        if (i != question.IndexOfCorrectAnswer && question.Options[i] != "[REMOVED]")
-                        {
-                            wrongIdx.Add(i);
-                        }
-                    }
-
-                    if (wrongIdx.Count > 0)
-                    {
-                        int randomWrongIdx = wrongIdx[Rnd.Next(wrongIdx.Count)];
-                        question.Options[randomWrongIdx] = "[REMOVED]";
-                    }
-                    return true;
-                }
+                AnsiConsole.MarkupLine("[bold green]Congratulations! You passed the exam![/]");
+                Player.Stats.Tokens += 150;
+                Player.Stats.IsONSecondary = false;
+                Player.Stats.PassedExams++;
             }
-            return false;
+            else
+            {
+                AnsiConsole.MarkupLine("[bold red]You didn't reach the passing score...[/]");
+                Teacher.Punish(Player);
+            }
         }
 
         private Question PullTheTicket()
@@ -154,22 +120,43 @@ namespace KpiSessionSimulator.Core
                     .Title("[yellow]Choose a ticket:[/]")
                     .AddChoices(new[] { $"Ticket N.{t1}", $"Ticket N.{t2}", $"Ticket N.{t3}" }));
 
-            if (choice.Contains(t1.ToString())) return q1;
-            if (choice.Contains(t2.ToString())) return q2;
+            if (choice.Contains(t1.ToString()))
+            {
+                return q1;
+            }
+            if (choice.Contains(t2.ToString()))
+            {
+                return q2;
+            }
+
             return q3;
+        }
+
+        private Question GetQuestion()
+        {
+            var availableQuestions = Questions.Where(q => q.Difficulty == State.CurrentDifficulty).ToList();
+
+            if (availableQuestions.Count == 0)
+            {
+                return Questions[Rnd.Next(Questions.Count)];
+            }
+
+            return availableQuestions[Rnd.Next(availableQuestions.Count)];
         }
 
         private bool AskQuestion(Question question, int questionNum)
         {
-            var panel = new Panel($"[bold]{question.Text}[/]")
-                .BorderColor(Color.Yellow)
-                .Padding(1, 1);
+            var panel = new Panel($"[bold]{question.Text}[/]").BorderColor(Color.Yellow).Padding(1, 1);
             AnsiConsole.Write(panel);
 
-            Question newQuestion = UseLoyalty();
-            if (newQuestion != null) return AskQuestion(newQuestion, questionNum);
+            Question newQuestion = PerkHandler.UseLoyalty(Player, PullTheTicket);
 
-            UseEagleEye(question);
+            if (newQuestion != null)
+            {
+                return AskQuestion(newQuestion, questionNum);
+            }
+
+            PerkHandler.UseEagleEye(Player, question);
 
             var displayOptions = new List<string>();
             for (int i = 0; i < question.Options.Count; i++)
@@ -189,12 +176,11 @@ namespace KpiSessionSimulator.Core
                 AnsiConsole.MarkupLine("\n[bold green]Correct answer![/]");
                 State.CorrectAnswers++;
                 Player.WrongAnswersStreak = 0;
+
                 return false;
             }
-            else
-            {
-                return HandleWrongAnswer(questionNum);
-            }
+
+            return HandleWrongAnswer(questionNum);
         }
 
         private bool HandleWrongAnswer(int questionNum)
@@ -202,89 +188,63 @@ namespace KpiSessionSimulator.Core
             AnsiConsole.MarkupLine($"\n[bold red]Wrong! {Teacher.Name} burns a hole in you with their eyes...[/]");
             Player.WrongAnswersStreak++;
 
-            bool playMinigame = UIHelper.AskYesNo("\n[red]Play a minigame to survive?[/]");
-
-            if (playMinigame)
-            {
-                bool isRoulette = Rnd.Next(1, 101) <= RouletteProbability;
-                IMiniGame miniGame = isRoulette ? ExamRoulette : new Blackjack();
-
-                AnsiConsole.MarkupLine("\n[grey]Preparing for the minigame...[/]");
-                Thread.Sleep(ShortPauseMs);
-
-                AnsiConsole.Write(new Rule(isRoulette ? "[red]MINIGAME: ROULETTE[/]" : "[red]MINIGAME: BLACKJACK[/]").RuleStyle("red"));
-                Thread.Sleep(ShortPauseMs);
-
-                bool wonMinigame = miniGame.Play(Player, Teacher, questionNum);
-
-                Thread.Sleep(ShortPauseMs);
-                AnsiConsole.Write(new Rule("[grey]Returning to the exam...[/]").RuleStyle("grey"));
-                Thread.Sleep(ShortPauseMs);
-
-                if (wonMinigame)
-                {
-                    AnsiConsole.MarkupLine("[bold green]You won the minigame! You get a second chance[/]");
-                    return true;
-                }
-                else
-                {
-                    AnsiConsole.MarkupLine("[bold red]You lost the minigame! The teacher starts punishing you...[/]");
-
-                    if (!isRoulette)
-                    {
-                        State.BlackjackLosses++;
-                        if (State.BlackjackLosses % BlackjackLossesForPenalty == 0)
-                        {
-                            AnsiConsole.MarkupLine($"[red]You lost Blackjack {State.BlackjackLosses} times[/]");
-                            IncreaseDifficulty();
-                        }
-                    }
-                    else
-                    {
-                        State.IsHospitalized = true;
-                    }
-                }
-            }
-            else
+            if (!UIHelper.AskYesNo("\n[red]Play a minigame to survive?[/]"))
             {
                 AnsiConsole.MarkupLine("\n[grey]You took the minus without a fight[/]");
-                IncreaseDifficulty();
+                DiffManager.IncreaseDifficulty(State);
+
+                return false;
             }
+
+            return PlayMinigame(questionNum);
+        }
+
+        private bool PlayMinigame(int questionNum)
+        {
+            bool isRoulette = Rnd.Next(1, 101) <= RouletteProbability;
+            IMiniGame miniGame = isRoulette ? ExamRoulette : new Blackjack();
+
+            AnsiConsole.MarkupLine("\n[grey]Preparing for the minigame...[/]");
+            Thread.Sleep(ShortPauseMs);
+
+            AnsiConsole.Write(new Rule(isRoulette ? "[red]MINIGAME: ROULETTE[/]" : "[red]MINIGAME: BLACKJACK[/]").RuleStyle("red"));
+            Thread.Sleep(ShortPauseMs);
+
+            bool wonMinigame = miniGame.Play(Player, Teacher, questionNum);
+
+            Thread.Sleep(ShortPauseMs);
+            AnsiConsole.Write(new Rule("[grey]Returning to the exam...[/]").RuleStyle("grey"));
+            Thread.Sleep(ShortPauseMs);
+
+            if (wonMinigame)
+            {
+                AnsiConsole.MarkupLine("[bold green]You won the minigame! You get a second chance[/]");
+
+                return true;
+            }
+
+            ApplyMinigameLoss(isRoulette);
+
             return false;
         }
 
-        private void IncreaseDifficulty()
+        private void ApplyMinigameLoss(bool isRoulette)
         {
-            switch (State.CurrentDifficulty)
-            {
-                case Difficulty.Easy:
-                    State.CurrentDifficulty = Difficulty.Normal;
-                    AnsiConsole.MarkupLine("\n[yellow]Difficulty increased to 'Normal'[/]");
-                    break;
-                case Difficulty.Normal:
-                    State.CurrentDifficulty = Difficulty.Medium;
-                    AnsiConsole.MarkupLine("\n[darkorange]The teacher asks additional questions. Difficulty is 'Medium'[/]");
-                    break;
-                case Difficulty.Medium:
-                    State.CurrentDifficulty = Difficulty.Difficult;
-                    AnsiConsole.MarkupLine("\n[red]The teacher frowns. The next questions will be very difficult![/]");
-                    break;
-                case Difficulty.Difficult:
-                    State.CurrentDifficulty = Difficulty.DeathMode;
-                    AnsiConsole.MarkupLine("\n[bold red]DEATH MODE! Pray to God.[/]");
-                    break;
-                case Difficulty.DeathMode:
-                    AnsiConsole.MarkupLine("\n[bold darkred]Difficulty is maxed out. Dopka is imminent...[/]");
-                    break;
-            }
-        }
+            AnsiConsole.MarkupLine("[bold red]You lost the minigame! The teacher starts punishing you...[/]");
 
-        private Question GetQuestion()
-        {
-            var availableQuestions = Questions.Where(q => q.Difficulty == State.CurrentDifficulty).ToList();
-            if (availableQuestions.Count == 0) return Questions[Rnd.Next(Questions.Count)];
-            int idx = Rnd.Next(availableQuestions.Count);
-            return availableQuestions[idx];
+            if (isRoulette)
+            {
+                State.IsHospitalized = true;
+            }
+            else
+            {
+                State.BlackjackLosses++;
+                if (State.BlackjackLosses % BlackjackLossesForPenalty == 0)
+                {
+                    AnsiConsole.MarkupLine($"[red]You lost Blackjack {State.BlackjackLosses} times[/]");
+                    DiffManager.IncreaseDifficulty(State);
+                }
+            }
         }
     }
 }
