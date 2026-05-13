@@ -1,9 +1,11 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
 using Spectre.Console;
+using KpiSessionSimulator.Attributes;
 
 namespace KpiSessionSimulator.Shop
 {
+    [ShopPerks]
     public class EagleEye : IItemCommand
     {
         public string Name => "Blue Eye";

@@ -1,9 +1,11 @@
-﻿using KpiSessionSimulator.Interfaces;
+﻿using KpiSessionSimulator.Attributes;
+using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
 using Spectre.Console;
 
 namespace KpiSessionSimulator.Shop
 {
+    [ShopPerks]
     public class Immunity : IItemCommand
     {
         public string Name => "Immunity";

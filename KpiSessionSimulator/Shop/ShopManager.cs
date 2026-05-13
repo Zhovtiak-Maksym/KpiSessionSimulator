@@ -6,12 +6,12 @@ namespace KpiSessionSimulator.Shop
 {
     public class ShopManager
     {
-        private List<IItemCommand> perks;
+        private List<IItemCommand> _perks;
         public const int ShortPause = 1500;
 
         public ShopManager()
         {
-            perks = new List<IItemCommand>
+            _perks = new List<IItemCommand>
             {
                 new EagleEye(),
                 new Immunity(),
@@ -44,7 +44,7 @@ namespace KpiSessionSimulator.Shop
 
                 var choices = new List<string>();
 
-                foreach (var item in perks)
+                foreach (var item in _perks)
                 {
                     table.AddRow($"[bold]{item.Name}[/]", $"[gold1]{item.Price}[/]", item.Description);
                     choices.Add(item.Name);
@@ -67,7 +67,7 @@ namespace KpiSessionSimulator.Shop
                     break;
                 }
 
-                var selectedPerk = perks.First(p => p.Name == choice);
+                var selectedPerk = _perks.First(p => p.Name == choice);
                 selectedPerk.Execute(player);
 
                 AnsiConsole.MarkupLine("\n[grey](Press any key to continue)[/]");
