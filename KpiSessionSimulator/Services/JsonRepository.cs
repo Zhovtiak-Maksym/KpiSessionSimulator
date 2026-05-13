@@ -14,6 +14,11 @@ namespace KpiSessionSimulator.Services
 
             string jsonStr = await File.ReadAllTextAsync(path);
 
+            if (string.IsNullOrWhiteSpace(jsonStr))
+            {
+                return new T();
+            }
+
             var options = new JsonSerializerOptions
             {
                 Converters = { new JsonStringEnumConverter() },
