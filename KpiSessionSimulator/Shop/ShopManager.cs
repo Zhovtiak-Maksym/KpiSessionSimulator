@@ -1,6 +1,8 @@
 ﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
+using KpiSessionSimulator.Attributes;
 using Spectre.Console;
+using System.Reflection;
 
 namespace KpiSessionSimulator.Shop
 {
@@ -11,13 +13,24 @@ namespace KpiSessionSimulator.Shop
 
         public ShopManager()
         {
-            _perks = new List<IItemCommand>
+            _perks = new List<IItemCommand>();
+
+            var itemTypes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t =>
+                    t.GetCustomAttribute<ShopPerksAttribute>() != null &&
+                    typeof(IItemCommand).IsAssignableFrom(t) &&
+                    !t.IsInterface &&
+                    !t.IsAbstract);
+
+            foreach (var type in itemTypes)
             {
-                new EagleEye(),
-                new Immunity(),
-                new Loyalty(),
-                new TrickyHands()
-            };
+                var instance = (IItemCommand)Activator.CreateInstance(type);
+
+                if (instance != null)
+                {
+                    _perks.Add(instance);
+                }
+            }
         }
 
         public void ShopLife(Player player)
@@ -33,41 +46,39 @@ namespace KpiSessionSimulator.Shop
 
                 AnsiConsole.MarkupLine($"\n[bold]Current Balance:[/] [gold1]{player.Stats.Tokens} tokens[/]\n");
 
-                var table = new Table()
-                    .Border(TableBorder.Rounded)
-                    .BorderColor(Color.Purple)
-                    .Title("[yellow]Available Perks[/]");
-
-                table.AddColumn(new TableColumn("[green]Perk[/]").Centered());
-                table.AddColumn(new TableColumn("[gold1]Price[/]").Centered());
-                table.AddColumn("[grey]Description[/]");
-
-                var choices = new List<string>();
+                var displayOptions = new Dictionary<string, IItemCommand>();
 
                 foreach (var item in _perks)
                 {
-                    table.AddRow($"[bold]{item.Name}[/]", $"[gold1]{item.Price}[/]", item.Description);
-                    choices.Add(item.Name);
+                    string nameCol = item.Name.PadRight(15);
+                    string priceCol = $"{item.Price} t.".PadRight(7);
+
+                    string row = $"[green]{nameCol}[/] | [gold1]{priceCol}[/] | [grey]{item.Description}[/]";
+
+                    displayOptions.Add(row, item);
                 }
 
-                choices.Add("Exit Shop");
+                string exitOption = $"[red]{"Exit Shop".PadRight(15)}[/] | {"".PadRight(7)} | [grey]Leave the black market[/]";
 
-                AnsiConsole.Write(table);
+                var allChoices = displayOptions.Keys.ToList();
+                allChoices.Add(exitOption);
 
-                var choice = AnsiConsole.Prompt(
-                    new SelectionPrompt<string>()
-                        .Title("\n[yellow]Select a perk to buy:[/]")
-                        .AddChoices(choices));
+                var prompt = new SelectionPrompt<string>()
+                    .Title("[yellow]Use UP/DOWN arrows to select a perk and press ENTER:[/]")
+                    .PageSize(10)
+                    .AddChoices(allChoices);
 
-                if (choice == "Exit Shop")
+                string choice = AnsiConsole.Prompt(prompt);
+
+                if (choice == exitOption)
                 {
-                    AnsiConsole.MarkupLine("\n[grey]Leaving the Black Market...[/]");
+                    AnsiConsole.MarkupLine("\n[grey]Leaving the Black Market[/]");
                     Thread.Sleep(ShortPause);
 
                     break;
                 }
 
-                var selectedPerk = _perks.First(p => p.Name == choice);
+                var selectedPerk = displayOptions[choice];
                 selectedPerk.Execute(player);
 
                 AnsiConsole.MarkupLine("\n[grey](Press any key to continue)[/]");
