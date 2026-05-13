@@ -17,7 +17,6 @@
             Stats.PassedExams = 0;
             Stats.Tokens = 30;
             Stats.Deaths = 0;
-            Stats.Achievements = new List<string>();
             Stats.IsONSecondary = false;
             Stats.IsExpelled = false;
             Stats.EagleEyeCount = 0;

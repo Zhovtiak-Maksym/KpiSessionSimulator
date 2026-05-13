@@ -8,7 +8,7 @@ namespace KpiSessionSimulator.Factories
 {
     public class ExamFactory
     {
-        public static ExamData GetExamSetUp(string choice)
+        public static async Task<ExamData> GetExamSetUpAsync(string choice)
         {
             BasicTeacher teacher;
             List<Question> questions;
@@ -18,17 +18,17 @@ namespace KpiSessionSimulator.Factories
                 case "OP (Skostariev)":
                     AnsiConsole.MarkupLine("\n[bold yellow]Starting OP exam...[/]");
                     teacher = new OpTeacher();
-                    questions = Services.QuestionsLoader.LoadQuestions(PathsMacker.OpQuestions);
+                    questions = await QuestionsLoader.LoadQuestionsAsync(PathsMacker.OpQuestions);
                     break;
                 case "ASD (Sulema)":
                     AnsiConsole.MarkupLine("\n[bold yellow]Starting ASD exam...[/]");
                     teacher = new ASDTeacher();
-                    questions = Services.QuestionsLoader.LoadQuestions(PathsMacker.AsdQuestions);
+                    questions = await QuestionsLoader.LoadQuestionsAsync(PathsMacker.AsdQuestions);
                     break;
                 case "Matan (Leheza)":
                     AnsiConsole.MarkupLine("\n[bold yellow]Starting Matan exam...[/]");
                     teacher = new MatanTeacher();
-                    questions = Services.QuestionsLoader.LoadQuestions(PathsMacker.MatanQuestions);
+                    questions = await QuestionsLoader.LoadQuestionsAsync(PathsMacker.MatanQuestions);
                     break;
                 default:
                     AnsiConsole.MarkupLine("\n[bold red]No such option! You are sent to Mr.Leheza...[/]");
