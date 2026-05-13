@@ -1,9 +1,10 @@
-﻿using KpiSessionSimulator.Models;
-using KpiSessionSimulator.Teachers;
-using KpiSessionSimulator.Interfaces;
+﻿using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Minigames;
+using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Services;
+using KpiSessionSimulator.Teachers;
 using Spectre.Console;
+using System.Numerics;
 
 namespace KpiSessionSimulator.Core
 {
@@ -12,11 +13,13 @@ namespace KpiSessionSimulator.Core
         public const int QuestionsToAnswer = 8;
         public const int QuestionsToPass = 6;
 
-        public const int RouletteProbability = 35;
+        public const int RouletteProbability = 40;
         public const int BlackjackLossesForPenalty = 3;
 
         private const int ShortPauseMs = 1500;
         private const int LongPauseMs = 3000;
+
+        private const int ExamPassRewardTokens = 150;
 
         private Player Player;
         private BasicTeacher Teacher;
@@ -43,6 +46,7 @@ namespace KpiSessionSimulator.Core
         public void Exam()
         {
             Teacher.Interact(Player, State);
+
             if (Player.Stats.IsExpelled)
             {
                 return;
@@ -50,6 +54,7 @@ namespace KpiSessionSimulator.Core
 
             if (Player.Stats.IsONSecondary)
             {
+                AnsiConsole.MarkupLine($"\n[yellow]You are on Secondary: Questions difficulty was set on 'Medium' level[/]");
                 State.CurrentDifficulty = Difficulty.Medium;
             }
 
@@ -94,9 +99,12 @@ namespace KpiSessionSimulator.Core
             if (State.CorrectAnswers >= QuestionsToPass)
             {
                 AnsiConsole.MarkupLine("[bold green]Congratulations! You passed the exam![/]");
-                Player.Stats.Tokens += 150;
-                Player.Stats.IsONSecondary = false;
-                Player.Stats.PassedExams++;
+
+                var stats = Player.Stats;
+                stats.Tokens += ExamPassRewardTokens;
+                stats.IsONSecondary = false;
+                stats.PassedExams++;
+                Player.Stats = stats;
             }
             else
             {

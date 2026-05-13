@@ -154,6 +154,7 @@ namespace KpiSessionSimulator
             table.AddRow("Passed Exams", $"[green]{player.Stats.PassedExams}[/]");
             table.AddRow("Deaths", $"[red]{player.Stats.Deaths}[/]");
             table.AddRow("Tokens", $"[gold1]{player.Stats.Tokens}[/]");
+            table.AddRow("On Retake", player.Stats.IsONSecondary ? "[red]YES[/]" : "[green]NO[/]");
             table.AddRow("Expelled", player.Stats.IsExpelled ? "[red]YES[/]" : "[green]NO[/]");
 
             AnsiConsole.Write(table);

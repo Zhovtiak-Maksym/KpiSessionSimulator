@@ -14,7 +14,9 @@ namespace KpiSessionSimulator.Services
                 if (usePerk)
                 {
                     AnsiConsole.MarkupLine("\n[cyan]The teacher sees your frightened eyes and lets you pick another ticket...[/]");
-                    player.Stats.LoyaltyCount--;
+                    var stats = player.Stats;
+                    stats.LoyaltyCount--;
+                    player.Stats = stats;
 
                     return pullTicketAction(); 
                 }
@@ -32,13 +34,15 @@ namespace KpiSessionSimulator.Services
                 if (usePerk)
                 {
                     AnsiConsole.MarkupLine("\n[cyan]You caught a squirrel that stole one wrong answer![/]");
-                    player.Stats.EagleEyeCount--;
+                    var stats = player.Stats;
+                    stats.EagleEyeCount--;
+                    player.Stats = stats;
 
                     List<int> wrongIdx = new List<int>();
 
                     for (int i = 0; i < question.Options.Count; i++)
                     {
-                        if (i != question.IndexOfCorrectAnswer && question.Options[i] != "[REMOVED]")
+                        if (i != question.IndexOfCorrectAnswer && !question.Options[i].Contains("REMOVED"))
                         {
                             wrongIdx.Add(i);
                         }
@@ -48,7 +52,8 @@ namespace KpiSessionSimulator.Services
                     {
                         Random rnd = new Random();
                         int randomWrongIdx = wrongIdx[rnd.Next(wrongIdx.Count)];
-                        question.Options[randomWrongIdx] = "[REMOVED]";
+
+                        question.Options[randomWrongIdx] = "[grey]--- REMOVED ---[/]";
                     }
 
                     return true;

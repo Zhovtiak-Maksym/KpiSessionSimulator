@@ -21,14 +21,23 @@ namespace KpiSessionSimulator.Minigames
 
             scorePlayer = PlayerTurn(player, scorePlayer);
 
-            if (scorePlayer > 21) return false;
+            if (scorePlayer > 21)
+            {
+                return false;
+            }
 
-            AnsiConsole.MarkupLine($"\n[red]{teacher.Name} is drawing cards...[/]");
-            Thread.Sleep(ShortPauseMs);
+            if (scorePlayer != 21)
+            {
+                AnsiConsole.MarkupLine($"\n[red]{teacher.Name} is drawing cards...[/]");
+                Thread.Sleep(ShortPauseMs);
 
-            scoreTeacher = TeacherTurn(teacher, scoreTeacher);
+                scoreTeacher = TeacherTurn(teacher, scoreTeacher);
 
-            if (scoreTeacher > 21) return true;
+                if (scoreTeacher > 21)
+                {
+                    return true;
+                }
+            }
 
             return SelectWinner(player, teacher, scorePlayer, scoreTeacher);
         }
@@ -50,6 +59,13 @@ namespace KpiSessionSimulator.Minigames
                     AnsiConsole.MarkupLine($"\n[grey]You draw a card: {newCard}[/]");
                     AnsiConsole.MarkupLine($"[green]{player.NickName}'s score:[/] [bold]{curScore}[/]");
 
+                    if(curScore == 21)
+                    {
+                        AnsiConsole.MarkupLine("\n[bold green]Congratulations! You hit 21![/]");
+
+                        return curScore;
+                    }
+
                     if (curScore > 21)
                     {
                         if (player.Stats.TrickyHandsCount > 0 && UseTrickyHands(player, ref curScore, newCard))
@@ -58,12 +74,14 @@ namespace KpiSessionSimulator.Minigames
                         }
 
                         AnsiConsole.MarkupLine("\n[bold red]BUST! You exceeded 21[/]");
+
                         return curScore;
                     }
                 }
                 else if (choice == "Stand")
                 {
                     AnsiConsole.MarkupLine($"\n[grey]You stand with a score of {curScore}[/]");
+
                     return curScore;
                 }
             }
@@ -83,11 +101,13 @@ namespace KpiSessionSimulator.Minigames
                 if (curScore > 21)
                 {
                     AnsiConsole.MarkupLine($"\n[bold green]{teacher.Name} BUSTED! You win![/]");
+
                     return curScore;
                 }
             }
 
             AnsiConsole.MarkupLine($"\n[grey]{teacher.Name} stands with a score of {curScore}[/]");
+
             return curScore;
         }
 
@@ -99,14 +119,17 @@ namespace KpiSessionSimulator.Minigames
             AnsiConsole.MarkupLine($"[green]{player.NickName}:[/] {scorePlayer}");
             AnsiConsole.MarkupLine($"[red]{teacher.Name}:[/] {scoreTeacher}");
 
-            if (scorePlayer > scoreTeacher)
+
+            if (scorePlayer == 21 || scorePlayer > scoreTeacher)
             {
                 AnsiConsole.MarkupLine("\n[bold green]You win the hand![/]");
+
                 return true;
             }
             else
             {
                 AnsiConsole.MarkupLine("\n[bold red]The teacher wins. Your grade is lowered![/]");
+
                 return false;
             }
         }
@@ -117,7 +140,9 @@ namespace KpiSessionSimulator.Minigames
 
             if (usePerk)
             {
-                player.Stats.TrickyHandsCount--;
+                var stats = player.Stats;
+                stats.TrickyHandsCount--;
+                player.Stats = stats;
                 score -= lastCard;
 
                 AnsiConsole.MarkupLine($"\n[cyan]You sneakily drop the card ({lastCard}) off the table...[/]");

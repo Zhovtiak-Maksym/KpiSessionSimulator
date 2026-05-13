@@ -22,8 +22,10 @@ namespace KpiSessionSimulator.Shop
                 return;
             }
 
-            player.Stats.Tokens -= Price;
-            player.Stats.LoyaltyCount++;
+            var stats = player.Stats;
+            stats.Tokens -= Price;
+            stats.LoyaltyCount++;
+            player.Stats = stats;
 
             AnsiConsole.MarkupLine($"\n[bold green]{Name} has been bought[/]"); ;
         }

@@ -18,6 +18,5 @@
                 Directory.CreateDirectory(DataFolder);
             }
         }
-
     }
 }

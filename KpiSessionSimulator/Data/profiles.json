@@ -1,0 +1,18 @@
+[
+  {
+    "NickName": "Max",
+    "Password": "12345",
+    "Stats": {
+      "PassedExams": 2,
+      "Tokens": 500,
+      "Deaths": 2,
+      "IsONSecondary": false,
+      "IsExpelled": false,
+      "EagleEyeCount": 0,
+      "ImmunityCount": 0,
+      "LoyaltyCount": 0,
+      "TrickyHandsCount": 0
+    },
+    "Faculty": "FPSPM"
+  }
+]

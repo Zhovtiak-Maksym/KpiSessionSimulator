@@ -34,6 +34,7 @@ namespace KpiSessionSimulator.Minigames
             if (!isShot)
             {
                 AnsiConsole.MarkupLine("\n[bold grey]You hear a metallic 'click'[/]");
+                Thread.Sleep(ShortPause);
                 AnsiConsole.MarkupLine($"\n[bold green]{teacher.Name}: Today is your second birthday![/]");
 
                 if (CurrBullets < MaxBullets)
@@ -76,7 +77,9 @@ namespace KpiSessionSimulator.Minigames
 
                 if (usePerk)
                 {
-                    player.Stats.ImmunityCount--;
+                    var stats = player.Stats;
+                    stats.ImmunityCount--;
+                    player.Stats = stats;
 
                     return true;
                 }
