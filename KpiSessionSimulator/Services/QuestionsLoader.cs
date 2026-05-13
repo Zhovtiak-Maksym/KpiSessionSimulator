@@ -1,27 +1,17 @@
 ﻿using KpiSessionSimulator.Models;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace KpiSessionSimulator.Services
 {
     public class QuestionsLoader
     {
-        public static List<Question> LoadQuestions(string path)
+        public static async Task<List<Question>> LoadQuestionsAsync(string path)
         {
             if (!File.Exists(path))
             {
-                throw new FileNotFoundException($"Шлях до бази даних питань не знайдено: {path}");
+                throw new FileNotFoundException($"Path to the questions database not found: {path}");
             }
 
-            string jsonStr = File.ReadAllText(path);
-
-            var options = new JsonSerializerOptions
-            {
-                Converters = { new JsonStringEnumConverter() },
-                PropertyNameCaseInsensitive = true
-            };
-
-            return JsonSerializer.Deserialize<List<Question>>(jsonStr, options) ?? new List<Question>();
+            return await JsonRepository<List<Question>>.LoadAsync(path);
         }
     }
 }

@@ -1,35 +1,25 @@
 ﻿using KpiSessionSimulator.Models;
-using System.Text.Json;
 using Spectre.Console;
 
 namespace KpiSessionSimulator.Services
 {
     public class ProfileManager
     {
-        public static List<Player> LoadProfiles()
+        public static async Task<List<Player>> LoadProfilesAsync()
         {
-            if (!File.Exists(PathsMacker.Profiles))
-            {
-                return new List<Player>();
-            }
-
-            string jsonStr = File.ReadAllText(PathsMacker.Profiles);
-
-            return JsonSerializer.Deserialize<List<Player>>(jsonStr) ?? new List<Player>();
+            return await JsonRepository<List<Player>>.LoadAsync(PathsMacker.Profiles);
         }
 
-        public static void SaveProfiles(List<Player> profiles)
+        public static async Task SaveProfilesAsync(List<Player> profiles)
         {
             PathsMacker.EnsureDataFolderExists();
 
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            string jsonStr = JsonSerializer.Serialize(profiles, options);
-            File.WriteAllText(PathsMacker.Profiles, jsonStr);
+            await JsonRepository<List<Player>>.SaveAsync(PathsMacker.Profiles, profiles);
         }
 
-        public static Player LoginOrRegister()
+        public static async Task<Player> LoginOrRegisterAsync()
         {
-            List<Player> players = LoadProfiles();
+            List<Player> players = await LoadProfilesAsync();
 
             AnsiConsole.Write(
                 new FigletText("KPI SESSION")
@@ -53,11 +43,11 @@ namespace KpiSessionSimulator.Services
 
                 if (choice == "Login")
                 {
-                    result = ProcessLogin(players);
+                    result = await ProcessLoginAsync(players);
                 }
                 else if (choice == "Register")
                 {
-                    result = ProcessRegister(players);
+                    result = await ProcessRegisterAsync(players);
                 }
 
                 if (result != null)
@@ -67,9 +57,9 @@ namespace KpiSessionSimulator.Services
             }
         }
 
-        private static Player ProcessLogin(List<Player> allPlayers)
+        private static async Task<Player> ProcessLoginAsync(List<Player> allPlayers)
         {
-            string nick = AnsiConsole.Ask<string>("[green]Enter nickname (or '0' to go back):[/] ");
+            string nick = AnsiConsole.Ask<string>("[green]Enter nickname (or '0' to go back): [/] ");
 
             if (nick == "0")
             {
@@ -86,7 +76,7 @@ namespace KpiSessionSimulator.Services
             {
                 AnsiConsole.MarkupLine("\n[bold yellow]Player not found. Switching to registration...[/]");
 
-                return ProcessRegister(allPlayers, nick);
+                return await ProcessRegisterAsync(allPlayers, nick);
             }
         }
 
@@ -95,7 +85,7 @@ namespace KpiSessionSimulator.Services
             while (true)
             {
                 string password = AnsiConsole.Prompt(
-                    new TextPrompt<string>("[blue]Enter password (or '0' to go back):[/] ")
+                    new TextPrompt<string>("[blue]Enter password (or '0' to go back): [/] ")
                         .Secret());
 
                 if (password == "0")
@@ -110,17 +100,17 @@ namespace KpiSessionSimulator.Services
                     return existingPlayer;
                 }
 
-                AnsiConsole.MarkupLine("[bold red]Incorrect password![/]");
+                AnsiConsole.MarkupLine("[bold red]Incorrect password[/]");
             }
         }
 
-        private static Player ProcessRegister(List<Player> allPlayers, string defaultNick = null)
+        private static async Task<Player> ProcessRegisterAsync(List<Player> allPlayers, string defaultNick = null)
         {
             string nick = defaultNick;
 
             if (string.IsNullOrWhiteSpace(nick))
             {
-                nick = AnsiConsole.Ask<string>("[green]Create a nickname (or '0' to go back):[/] ");
+                nick = AnsiConsole.Ask<string>("[green]Create a nickname (or '0' to go back): [/] ");
             }
 
             if (nick == "0")
@@ -130,8 +120,8 @@ namespace KpiSessionSimulator.Services
 
             while (allPlayers.Any(p => p.NickName == nick))
             {
-                AnsiConsole.MarkupLine("\n[bold red]This nickname is already taken![/]");
-                nick = AnsiConsole.Ask<string>("[green]Choose another nickname (or '0' to go back):[/] ");
+                AnsiConsole.MarkupLine("\n[bold red]This nickname is already taken[/]");
+                nick = AnsiConsole.Ask<string>("[green]Choose another nickname (or '0' to go back): [/] ");
 
                 if (nick == "0")
                 {
@@ -140,7 +130,7 @@ namespace KpiSessionSimulator.Services
             }
 
             string password = AnsiConsole.Prompt(
-                new TextPrompt<string>("[blue]Create a password (or '0' to go back):[/] ")
+                new TextPrompt<string>("[blue]Create a password (or '0' to go back): [/] ")
                     .Secret());
 
             if (password == "0")
@@ -148,10 +138,10 @@ namespace KpiSessionSimulator.Services
                 return null;
             }
 
-            return CreateNewPlayer(allPlayers, nick, password);
+            return await CreateNewPlayerAsync(allPlayers, nick, password);
         }
 
-        private static Player CreateNewPlayer(List<Player> players, string nick, string pass)
+        private static async Task<Player> CreateNewPlayerAsync(List<Player> players, string nick, string pass)
         {
             string finalNick = nick;
 
@@ -175,7 +165,8 @@ namespace KpiSessionSimulator.Services
             };
 
             players.Add(newPlayer);
-            SaveProfiles(players);
+
+            await SaveProfilesAsync(players);
 
             AnsiConsole.MarkupLine($"\n[bold green]Profile '{finalNick}' created![/]");
 
