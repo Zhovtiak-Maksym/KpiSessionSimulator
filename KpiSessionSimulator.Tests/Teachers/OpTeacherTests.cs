@@ -22,5 +22,21 @@ namespace KpiSessionSimulator.Tests.Teachers
             // Assert
             Assert.That(state.CorrectAnswers, Is.EqualTo(1));
         }
+
+        [Test]
+        public void Interact_ShouldNotGiveFreeCorrectAnswer_WhenPlayerWithoutDeaths()
+        {
+            // Arrange
+            var teacher = new OpTeacher();
+            var player = new Player();
+            player.Stats = new PlayerStats { Deaths = 0 }; 
+            var state = new ExamState { CorrectAnswers = 0 };
+
+            // Act
+            teacher.Interact(player, state);
+
+            // Assert
+            Assert.That(state.CorrectAnswers, Is.EqualTo(0));
+        }
     }
 }

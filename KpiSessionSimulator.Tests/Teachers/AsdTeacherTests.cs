@@ -22,5 +22,21 @@ namespace KpiSessionSimulator.Tests.Teachers
             // Assert
             Assert.That(state.CurrentDifficulty, Is.EqualTo(Difficulty.Difficult));
         }
+
+        [Test]
+        public void Interact_ShouldNotIncreaseDifficulty_WithNoDeaths()
+        {
+            // Arrange
+            var teacher = new ASDTeacher();
+            var player = new Player();
+            player.Stats = new PlayerStats { Deaths = 0 }; 
+            var state = new ExamState { CurrentDifficulty = Difficulty.Normal };
+
+            // Act
+            teacher.Interact(player, state);
+
+            // Assert
+            Assert.That(state.CurrentDifficulty, Is.EqualTo(Difficulty.Normal));
+        }
     }
 }
