@@ -111,7 +111,7 @@ namespace KpiSessionSimulator.Minigames
             return curScore;
         }
 
-        private bool SelectWinner(Player player, BasicTeacher teacher, int scorePlayer, int scoreTeacher)
+        public bool SelectWinner(Player player, BasicTeacher teacher, int scorePlayer, int scoreTeacher)
         {
             AnsiConsole.WriteLine();
             AnsiConsole.Write(new Rule("[yellow]FINAL RESULTS[/]").RuleStyle("yellow"));

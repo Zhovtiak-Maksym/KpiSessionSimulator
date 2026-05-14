@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace KpiSessionSimulator.Punishments
 {
-    internal class TransferToFiotPenalty : IPunishment
+    public class TransferToFiotPenalty : IPunishment
     {
         private readonly string _transferToFaculty;
 
