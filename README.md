@@ -24,7 +24,7 @@ graph TD
     
     Interfaces[Interfaces: IMiniGame, IPunishment, IItemCommand]
     Models[Models: Сутності - Player, Question, PlayerStats]
-
+```
 
 ## Призначення програми
 **KPI Session Simulator** - це консольна гра типу "рогалика", яка симулює процес складання сесії в КПІ. Програма демонструє у жартівливому характері, як складаються іспити.
