@@ -1,0 +1,216 @@
+[
+  {
+    "Text": "What is the geometric meaning of the derivative at a point?",
+    "Options": [ "Area under curve", "Slope of the tangent line", "Y-intercept", "Speed" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is the integral of f(x) = 2x?",
+    "Options": [ "x^2 + C", "2x^2 + C", "x + C", "2 + C" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is the derivative of a constant number?",
+    "Options": [ "1", "The number itself", "0", "Infinity" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What does integration represent geometrically?",
+    "Options": [ "The slope", "The tangent", "The area under the curve", "The limit" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is the derivative of e^x?",
+    "Options": [ "x * e^(x-1)", "e^x", "ln(x)", "1/e^x" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is the value of sin(0)?",
+    "Options": [ "1", "0", "-1", "Undefined" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is the basic power rule for differentiating x^n?",
+    "Options": [ "n * x^(n-1)", "x^(n+1) / (n+1)", "n * x", "x^n" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 0
+  },
+
+  {
+    "Text": "What does L'Hopital's Rule help us evaluate?",
+    "Options": [ "Integrals", "Limits of indeterminate forms (0/0)", "Series convergence", "Areas" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What is the derivative of ln(x)?",
+    "Options": [ "e^x", "1/x", "x", "ln(x^2)" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What does the first remarkable limit (lim x->0 sin(x)/x) equal to?",
+    "Options": [ "0", "Infinity", "1", "Does not exist" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What is the product rule for differentiating f(x) * g(x)?",
+    "Options": [ "f'g'", "f'g + fg'", "f' + g'", "f/g'" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "If a function is continuous at a point, is it always differentiable there?",
+    "Options": [ "Yes, always", "No, for example |x| at x=0", "Only if it is positive", "Yes, except for constants" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What is the integral of 1/x?",
+    "Options": [ "ln|x| + C", "e^x + C", "-1/x^2 + C", "x^2 + C" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What does a zero first derivative (f'(x) = 0) indicate?",
+    "Options": [ "An inflection point", "A vertical asymptote", "A critical point (possible min/max)", "A root of the function" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 1
+  },
+
+  {
+    "Text": "What does a positive second derivative (f''(x) > 0) indicate?",
+    "Options": [ "Function is decreasing", "Graph is concave down", "Graph is concave up (convex)", "A local maximum" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 2
+  },
+  {
+    "Text": "How does the harmonic series (Sum of 1/n) behave?",
+    "Options": [ "Converges to 0", "Converges to Pi", "Converges to 1", "Diverges to infinity" ],
+    "IndexOfCorrectAnswer": 3,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What is the limit of (1 + 1/n)^n as n approaches infinity?",
+    "Options": [ "1", "Infinity", "e", "0" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What does the Fundamental Theorem of Calculus connect?",
+    "Options": [ "Algebra and Geometry", "Differentiation and Integration", "Limits and Matrices", "Sine and Cosine" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What is the integration by parts formula?",
+    "Options": [ "Int(u dv) = uv - Int(v du)", "Int(u v) = u'v + uv'", "Int(u/v) = (u'v - uv')/v^2", "Int(u dv) = u + v" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What are partial derivatives used for?",
+    "Options": [ "Polynomials", "Functions of multiple variables", "Basic fractions", "Graphing straight lines" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What is the integral of sin(x)?",
+    "Options": [ "cos(x) + C", "-cos(x) + C", "sin^2(x) + C", "tan(x) + C" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+
+  {
+    "Text": "What are the first two non-zero terms of the Maclaurin series for sin(x)?",
+    "Options": [ "1 - x^2/2", "x - x^3/6", "x + x^2", "1 + x" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "Which test determines convergence for the alternating series Sum((-1)^n / n)?",
+    "Options": [ "Integral Test", "Ratio Test", "Leibniz's Test", "Root Test" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What does the gradient vector of a scalar function indicate?",
+    "Options": [ "The area under the surface", "The direction of the steepest ascent", "The limits of integration", "The concavity" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What is an improper integral?",
+    "Options": [ "Integral of a negative function", "Integral with infinite limits or an unbounded integrand", "Integral without + C", "Integral of a fraction" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What is the radius of convergence for the Maclaurin series of e^x?",
+    "Options": [ "0", "1", "Pi", "Infinity" ],
+    "IndexOfCorrectAnswer": 3,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What geometric entity is found using a double integral over a region D?",
+    "Options": [ "Length of a curve", "Volume under a surface", "Tangent plane", "Curvature" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "If the Ratio Test yields L < 1, what can we say about the series?",
+    "Options": [ "It diverges", "It converges absolutely", "Test is inconclusive", "It converges conditionally" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+
+  {
+    "Text": "What is the exact value of the Gaussian integral (integral of e^(-x^2) from -inf to inf)?",
+    "Options": [ "1", "sqrt(Pi)", "Pi", "Infinity" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What is the Epsilon-Delta definition of a limit lim(x->a) f(x) = L?",
+    "Options": [ "For every e>0 there is a d>0 such that 0<|x-a|<d implies |f(x)-L|<e", "f(a) = L", "Derivative is zero at a", "L is infinity" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What is the difference between Pointwise and Uniform convergence?",
+    "Options": [ "There is no difference", "Uniform means the rate of convergence does not depend on x", "Pointwise is only for constants", "Uniform implies the function is linear" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What does the Jacobian determinant represent?",
+    "Options": [ "The local volume scaling factor under a coordinate transformation", "The maximum of a function", "The sum of a series", "The curvature of a line" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What does Green's Theorem relate?",
+    "Options": [ "A line integral around a closed curve to a double integral over the region it encloses", "Derivatives to integrals in 1D", "Volume to mass", "Trigonometric functions to exponents" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 4
+  },
+  {
+    "Text": "In Fourier Series, what functions form the orthogonal basis?",
+    "Options": [ "Polynomials", "Sines and Cosines", "Exponentials only", "Logarithms" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What characterizes the Riemann-Stieltjes integral compared to the standard Riemann integral?",
+    "Options": [ "It is evaluated over a sphere", "It integrates with respect to a function g(x) instead of just x", "It only works for constants", "It computes limits at infinity" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  }
+]

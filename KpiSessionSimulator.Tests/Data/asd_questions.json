@@ -1,0 +1,216 @@
+[
+  {
+    "Text": "What principle does the Stack data structure follow?",
+    "Options": [ "FIFO", "LIFO", "Random Access", "Key-Value" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is the time complexity of accessing an element in an Array by index?",
+    "Options": [ "O(1)", "O(n)", "O(log n)", "O(n^2)" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 0
+  },
+  {
+    "Text": "Which data structure operates on a First In, First Out (FIFO) principle?",
+    "Options": [ "Stack", "Tree", "Queue", "Graph" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is a node in a Linked List composed of?",
+    "Options": [ "Data and a pointer to the next node", "Only data", "An array of values", "A key-value pair" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 0
+  },
+  {
+    "Text": "Which sorting algorithm repeatedly swaps adjacent elements if they are in the wrong order?",
+    "Options": [ "Merge Sort", "Quick Sort", "Bubble Sort", "Insertion Sort" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is the primary advantage of an Array over a Linked List?",
+    "Options": [ "Faster insertions", "Dynamic size", "Faster random access", "Less memory usage" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What kind of data structure is a Binary Tree?",
+    "Options": [ "Linear", "Hierarchical", "Tabular", "Sequential" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 0
+  },
+
+  {
+    "Text": "Which data structure is primarily used to implement Breadth-First Search (BFS)?",
+    "Options": [ "Stack", "Queue", "Hash Table", "Binary Tree" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "Which data structure is primarily used to implement Depth-First Search (DFS)?",
+    "Options": [ "Queue", "Hash Table", "Stack", "Linked List" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What is the time complexity of Binary Search in a sorted array?",
+    "Options": [ "O(1)", "O(n)", "O(n log n)", "O(log n)" ],
+    "IndexOfCorrectAnswer": 3,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What is a 'collision' in a Hash Table?",
+    "Options": [ "When two keys map to the same index", "Memory overflow", "Key deletion", "Null reference" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What defines a Binary Search Tree (BST)?",
+    "Options": [ "Left child < Parent < Right child", "Exactly 3 children", "Balanced by colors", "Stores only binary numbers" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 1
+  },
+  {
+    "Text": "Which sorting algorithm divides the array into halves, sorts them, and merges them?",
+    "Options": [ "Quick Sort", "Selection Sort", "Merge Sort", "Bubble Sort" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What is the worst-case time complexity of finding an element in a generic Unsorted Linked List?",
+    "Options": [ "O(1)", "O(log n)", "O(n)", "O(n^2)" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 1
+  },
+
+  {
+    "Text": "What is the worst-case time complexity of the QuickSort algorithm?",
+    "Options": [ "O(n log n)", "O(n)", "O(n^2)", "O(1)" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What does Dijkstra's algorithm find?",
+    "Options": [ "Minimum Spanning Tree", "Shortest path from a single source", "Maximum flow", "Topological order" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "Which characteristic is essential for a problem to be solved using Dynamic Programming?",
+    "Options": [ "Randomized states", "Overlapping subproblems", "Negative edge weights", "Linear time complexity" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What is the main property of a Max Heap?",
+    "Options": [ "Parent is always >= children", "Parent is always <= children", "It is a perfectly balanced tree", "It allows O(1) search" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 2
+  },
+  {
+    "Text": "Which algorithm is used to find the Minimum Spanning Tree in a graph?",
+    "Options": [ "Kruskal's Algorithm", "Bellman-Ford", "A* Algorithm", "Floyd-Warshall" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What data structure is best for implementing a priority queue?",
+    "Options": [ "Array", "Linked List", "Heap", "Stack" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What is the space complexity of an Adjacency Matrix for a graph with V vertices?",
+    "Options": [ "O(V)", "O(V^2)", "O(E)", "O(V + E)" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+
+  {
+    "Text": "Which shortest path algorithm can handle graphs with negative weight edges?",
+    "Options": [ "Dijkstra's Algorithm", "BFS", "Bellman-Ford Algorithm", "Prim's Algorithm" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What is the maximum height of a Red-Black Tree with n internal nodes?",
+    "Options": [ "O(n)", "2 * log(n + 1)", "log(n)", "O(n^2)" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What problem does the Knuth-Morris-Pratt (KMP) algorithm solve?",
+    "Options": [ "Sorting an array", "Finding shortest path", "Pattern matching in a string", "Matrix multiplication" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 3
+  },
+  {
+    "Text": "Which data structure uses the Union-Find algorithm?",
+    "Options": [ "Disjoint Set", "Trie", "Segment Tree", "Fenwick Tree" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What is the time complexity of the Floyd-Warshall algorithm for all-pairs shortest paths?",
+    "Options": [ "O(V^2)", "O(V^3)", "O(E * V)", "O(V log E)" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What data structure is highly efficient for prefix searches and autocomplete features?",
+    "Options": [ "Hash Table", "Binary Search Tree", "Trie", "Heap" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 3
+  },
+  {
+    "Text": "In the Master Theorem, if f(n) = O(n^(log_b(a) - e)) for e > 0, what is the complexity?",
+    "Options": [ "O(f(n))", "O(n^log_b(a))", "O(n^log_b(a) * log n)", "O(n^2)" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+
+  {
+    "Text": "What is the amortized time complexity of appending an element to a dynamic array?",
+    "Options": [ "O(1)", "O(n)", "O(log n)", "O(n^2)" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 4
+  },
+  {
+    "Text": "Which algorithm finds Strongly Connected Components in a directed graph in linear time?",
+    "Options": [ "Tarjan's Algorithm", "Kruskal's Algorithm", "Ford-Fulkerson", "Kahn's Algorithm" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What is the primary advantage of a Fibonacci Heap over a Binary Heap?",
+    "Options": [ "Faster extract-min", "Decreasing a key takes O(1) amortized time", "Less memory usage", "Easier to implement" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "In the A* search algorithm, what makes a heuristic 'admissible'?",
+    "Options": [ "It overestimates the cost", "It never overestimates the true cost to the goal", "It computes the exact cost", "It is calculated in O(1) time" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "Which probabilistic data structure is used to test whether an element is a member of a set?",
+    "Options": [ "B-Tree", "Bloom Filter", "Skip List", "Suffix Automaton" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What is the time complexity to build a Segment Tree from an array of size n?",
+    "Options": [ "O(1)", "O(log n)", "O(n)", "O(n log n)" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 4
+  },
+  {
+    "Text": "Which algorithm is used for finding the maximum flow in a flow network?",
+    "Options": [ "Dijkstra", "Ford-Fulkerson", "Boruvka", "Kosaraju" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  }
+]

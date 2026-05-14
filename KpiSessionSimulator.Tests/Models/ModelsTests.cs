@@ -15,7 +15,7 @@ namespace KpiSessionSimulator.Tests.Models
             // Assert
             Assert.That(player.Faculty, Is.EqualTo("FPSPM"));
             Assert.That(player.WrongAnswersStreak, Is.EqualTo(0));
-            Assert.That(player.Stats.Tokens, Is.EqualTo(30));
+            Assert.That(player.Stats.Tokens, Is.EqualTo(0));
             Assert.That(player.Stats.IsExpelled, Is.False);
             Assert.That(player.Stats.IsONSecondary, Is.False);
             Assert.That(player.Stats.PassedExams, Is.EqualTo(0));

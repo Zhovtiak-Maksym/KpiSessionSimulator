@@ -20,7 +20,7 @@ namespace KpiSessionSimulator.Models
             Stats = new PlayerStats
             {
                 PassedExams = 0,
-                Tokens = 30,
+                Tokens = 0,
                 Deaths = 0,
                 IsONSecondary = false,
                 IsExpelled = false,

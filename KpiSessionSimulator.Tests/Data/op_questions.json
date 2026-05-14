@@ -1,0 +1,216 @@
+[
+  {
+    "Text": "What is an object in Object-Oriented Programming?",
+    "Options": [ "A variable", "A blueprint", "An instance of a class", "A function" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+  {
+    "Text": "Which OOP principle describes hiding internal state and requiring all interaction to be performed through an object's methods?",
+    "Options": [ "Encapsulation", "Abstraction", "Polymorphism", "Inheritance" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 0
+  },
+  {
+    "Text": "Which keyword is used to create a new object in C#?",
+    "Options": [ "create", "new", "init", "alloc" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What does 'S' stand for in SOLID principles?",
+    "Options": [ "Static Typing", "Single Responsibility Principle", "System Reliability", "Secure Architecture" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 0
+  },
+  {
+    "Text": "Which keyword allows a class to inherit from a base class in C#?",
+    "Options": [ "extends", "inherits", ": (colon)", "->" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+  {
+    "Text": "What is the base class for all types in C#?",
+    "Options": [ "Entity", "Base", "Object", "Root" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+  {
+    "Text": "Which data type is used to store true or false values?",
+    "Options": [ "int", "string", "bool", "char" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 0
+  },
+
+  {
+    "Text": "What is Method Overloading in C#?",
+    "Options": [ "Overriding a base method", "Methods with the same name but different parameters", "Method calling itself", "Changing return type" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What does the 'static' keyword mean for a class member?",
+    "Options": [ "It cannot be changed", "It belongs to the class itself, not instances", "It is private", "It is saved to disk" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What is the primary role of the Garbage Collector in .NET?",
+    "Options": [ "Delete files", "Compile code", "Free memory by removing unreferenced objects", "Find syntax errors" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 1
+  },
+  {
+    "Text": "Can you instantiate an abstract class?",
+    "Options": [ "Yes", "No", "Only inside its own file", "Only if it has no methods" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "How many base classes can a C# class inherit from?",
+    "Options": [ "Multiple", "One", "Two", "Zero" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What exception is thrown when accessing a member on a null object?",
+    "Options": [ "ArgumentException", "InvalidCastException", "NullReferenceException", "IndexOutOfRangeException" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 1
+  },
+  {
+    "Text": "What is a constructor?",
+    "Options": [ "A method to delete an object", "A special method called when an object is created", "A property", "A static variable" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 1
+  },
+
+  {
+    "Text": "What is the difference between 'virtual' and 'abstract' methods?",
+    "Options": [ "Virtual must be overridden", "Virtual has a body, abstract has no body", "Abstract can be private", "They are identical" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What happens during 'Boxing' in .NET?",
+    "Options": [ "Zipping files", "Converting a Value Type into a Reference Type", "Garbage collection", "Casting child to parent" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "Where are Value Types (like structs and ints) typically allocated in memory?",
+    "Options": [ "Managed Heap", "The Stack", "L1 Cache", "Virtual Memory" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What is the difference between 'ref' and 'out' parameters?",
+    "Options": [ "They are the same", "Ref requires initialization before passing, out does not", "Out is for strings only", "Ref cannot be modified" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "Which access modifier makes a member accessible only within its own class and derived classes?",
+    "Options": [ "private", "public", "protected", "internal" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What is the difference between 'const' and 'readonly' fields?",
+    "Options": [ "No difference", "Readonly can be assigned at runtime in a constructor", "Const is for arrays only", "Readonly requires more memory" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+  {
+    "Text": "What keyword is used to handle exceptions in C#?",
+    "Options": [ "throw-catch", "try-catch", "error-handle", "check-fix" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 2
+  },
+
+  {
+    "Text": "Which interface must be implemented to allow an object to be iterated over using a 'foreach' loop?",
+    "Options": [ "IComparable", "IDisposable", "IEnumerable", "ICloneable" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What was ALLOWED in an abstract class but FORBIDDEN in an interface (prior to C# 8)?",
+    "Options": [ "State fields and constructors", "Method signatures", "Inheritance", "Properties" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What does the 'where T : new()' constraint mean in generic programming?",
+    "Options": [ "T must be a class", "T must have a parameterless constructor", "T must be a value type", "T must implement an interface" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What is the purpose of the 'lock' statement in C#?",
+    "Options": [ "Encrypt variables", "Ensure thread safety by preventing simultaneous access", "Prevent garbage collection", "Make a variable read-only" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "What is a 'Delegate' in C#?",
+    "Options": [ "An interface", "A type that represents references to methods", "A garbage collection rule", "A UI component" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+  {
+    "Text": "Which interface is used to manually release unmanaged resources?",
+    "Options": [ "IEnumerable", "ISerializable", "IDisposable", "IQueryable" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 3
+  },
+  {
+    "Text": "How does 'await' work in an async method?",
+    "Options": [ "Blocks the main thread", "Suspends evaluation of the method and yields control back to the caller", "Creates a new thread instantly", "Terminates the program" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 3
+  },
+
+  {
+    "Text": "What does the 'yield return' statement do under the hood?",
+    "Options": [ "Exits immediately", "Generates a custom state machine for lazy evaluation", "Throws an exception", "Frees memory" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What is Contravariance in C# generics?",
+    "Options": [ "Using a more derived type than specified", "Using a less derived (more generic) type than specified", "Converting int to string", "Comparing two objects" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What is 'Reflection' in .NET?",
+    "Options": [ "Code that formats itself", "The ability of a program to inspect its own metadata at runtime", "A memory leak", "Garbage collection strategy" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What is the Large Object Heap (LOH) in .NET?",
+    "Options": [ "A space for primitive types", "A memory segment for objects larger than 85,000 bytes", "The Call Stack", "An external database" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What does the 'volatile' keyword ensure?",
+    "Options": [ "Thread-safe atomic operations", "The variable will never be optimized by the compiler into a register", "The variable cannot be changed", "Fast garbage collection" ],
+    "IndexOfCorrectAnswer": 1,
+    "Difficulty": 4
+  },
+  {
+    "Text": "When should you use ValueTask instead of Task?",
+    "Options": [ "Always", "Never", "When the result of an async operation might already be available synchronously", "Only for UI updates" ],
+    "IndexOfCorrectAnswer": 2,
+    "Difficulty": 4
+  },
+  {
+    "Text": "What does 'stackalloc' do?",
+    "Options": [ "Allocates a block of memory on the stack instead of the heap", "Allocates memory on the hard drive", "Clears the stack", "Throws a StackOverflowException" ],
+    "IndexOfCorrectAnswer": 0,
+    "Difficulty": 4
+  }
+]
