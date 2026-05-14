@@ -26,7 +26,7 @@ namespace KpiSessionSimulator.Teachers
 
             if (player.Stats.Deaths >= 1)
             {
-                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [red]I feel that you write code first and then build the flowchart. Adding one more bullet to the revolver![/]");
+                AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [red]I feel that you write code first and then build the flowchart. Difficulty has been increased![/]");
                 state.CurrentDifficulty = Difficulty.Difficult;
                 Thread.Sleep(ShortPauseMs);
             }
