@@ -1,7 +1,8 @@
-﻿using KpiSessionSimulator.Interfaces;
+﻿using KpiSessionSimulator.Core;
+using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
-using KpiSessionSimulator.Teachers;
 using KpiSessionSimulator.Services; 
+using KpiSessionSimulator.Teachers;
 using Spectre.Console;
 
 namespace KpiSessionSimulator.Minigames
@@ -10,12 +11,13 @@ namespace KpiSessionSimulator.Minigames
     {
         public const int BulletSlots = 6;
         public const int MaxBullets = 4;
-        public const int ShortPause = 1500;
+        public const int StartNumOfBullets = 2;
+
         public int CurrBullets { get; private set; }
 
         public Roulette()
         {
-            CurrBullets = 2;
+            CurrBullets = StartNumOfBullets;
         }
 
         public bool Play(Player player, BasicTeacher teacher, int numberOfQuestion)
@@ -34,7 +36,7 @@ namespace KpiSessionSimulator.Minigames
             if (!isShot)
             {
                 AnsiConsole.MarkupLine("\n[bold grey]You hear a metallic 'click'[/]");
-                Thread.Sleep(ShortPause);
+                Thread.Sleep(GameSettings.ShortPauseMs);
                 AnsiConsole.MarkupLine($"\n[bold green]{teacher.Name}: Today is your second birthday![/]");
 
                 if (CurrBullets < MaxBullets)
@@ -48,7 +50,7 @@ namespace KpiSessionSimulator.Minigames
             else
             {
                 AnsiConsole.MarkupLine("\n[bold red]BANG![/]");
-                Thread.Sleep(ShortPause);
+                Thread.Sleep(GameSettings.ShortPauseMs);
 
                 if (hasImmunity)
                 {
@@ -92,12 +94,7 @@ namespace KpiSessionSimulator.Minigames
         {
             Random rnd = new Random();
 
-            if (rnd.Next(1, BulletSlots + 1) <= CurrBullets)
-            {
-                return true;
-            }
-
-            return false;
+            return rnd.Next(1, BulletSlots + 1) <= CurrBullets;
         }
     }
 }

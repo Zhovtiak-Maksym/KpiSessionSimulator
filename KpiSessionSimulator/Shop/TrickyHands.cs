@@ -8,11 +8,13 @@ namespace KpiSessionSimulator.Shop
     [ShopPerks]
     public class TrickyHands : IItemCommand
     {
-        public string Name => "Tricky Hands";
+        private const string PerkName = "Tricky Hands";
+        private const int PerkPrice = 150;
+        private const string PerkDescription = "Submitting tasks 5 minutes before the deadline taught your hands unprecedented agility to sneakily drop a card off the table";
 
-        public int Price => 150;
-
-        public string Description => "Submitting tasks 5 minutes before the deadline taught your hands unprecedented agility to sneakily drop a card off the table";
+        public string Name => PerkName;
+        public int Price => PerkPrice;
+        public string Description => PerkDescription;
 
         public void Execute(Player player)
         {

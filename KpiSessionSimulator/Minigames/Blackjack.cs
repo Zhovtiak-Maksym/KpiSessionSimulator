@@ -1,7 +1,8 @@
-﻿using KpiSessionSimulator.Interfaces;
+﻿using KpiSessionSimulator.Core;
+using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
-using KpiSessionSimulator.Teachers;
 using KpiSessionSimulator.Services; 
+using KpiSessionSimulator.Teachers;
 using Spectre.Console;
 
 namespace KpiSessionSimulator.Minigames
@@ -9,7 +10,6 @@ namespace KpiSessionSimulator.Minigames
     public class Blackjack : IMiniGame
     {
         private Random Rnd = new Random();
-        private const int ShortPauseMs = 1500;
 
         public bool Play(Player player, BasicTeacher teacher, int numberOfQuestion)
         {
@@ -29,7 +29,7 @@ namespace KpiSessionSimulator.Minigames
             if (scorePlayer != 21)
             {
                 AnsiConsole.MarkupLine($"\n[red]{teacher.Name} is drawing cards...[/]");
-                Thread.Sleep(ShortPauseMs);
+                Thread.Sleep(GameSettings.ShortPauseMs);
 
                 scoreTeacher = TeacherTurn(teacher, scoreTeacher);
 
@@ -91,7 +91,7 @@ namespace KpiSessionSimulator.Minigames
         {
             while (curScore < 17)
             {
-                Thread.Sleep(ShortPauseMs);
+                Thread.Sleep(GameSettings.ShortPauseMs);
                 int newCard = Rnd.Next(1, 11);
                 curScore += newCard;
 

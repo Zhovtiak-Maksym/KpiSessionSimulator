@@ -1,6 +1,7 @@
-﻿using KpiSessionSimulator.Interfaces;
+﻿using KpiSessionSimulator.Attributes;
+using KpiSessionSimulator.Core;
+using KpiSessionSimulator.Interfaces;
 using KpiSessionSimulator.Models;
-using KpiSessionSimulator.Attributes;
 using Spectre.Console;
 using System.Reflection;
 
@@ -9,7 +10,6 @@ namespace KpiSessionSimulator.Shop
     public class ShopManager
     {
         private List<IItemCommand> _perks;
-        public const int ShortPause = 1500;
 
         public ShopManager()
         {
@@ -73,7 +73,7 @@ namespace KpiSessionSimulator.Shop
                 if (choice == exitOption)
                 {
                     AnsiConsole.MarkupLine("\n[grey]Leaving the Black Market[/]");
-                    Thread.Sleep(ShortPause);
+                    Thread.Sleep(GameSettings.ShortPauseMs);
 
                     break;
                 }

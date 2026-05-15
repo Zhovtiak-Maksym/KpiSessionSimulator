@@ -2,7 +2,7 @@
 {
     public static class PathsMacker
     {
-        public static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\"));
+        public static readonly string ProjectRoot = AppContext.BaseDirectory;
 
         public static readonly string DataFolder = Path.Combine(ProjectRoot, "Data");
 

@@ -7,8 +7,6 @@ namespace KpiSessionSimulator.Teachers
 {
     public class OpTeacher : BasicTeacher
     {
-        private const int ShortPauseMs = 1500;
-
         public OpTeacher() : base("Ihor Vitaliyovych", new SecondaryPenalty(), "OP") { }
 
         public override void Interact(Player player, ExamState state)
@@ -21,13 +19,13 @@ namespace KpiSessionSimulator.Teachers
             }
 
             AnsiConsole.MarkupLine($"\n[grey]You came to the exam to[/] [cyan]{Name}[/] [grey]for the subject '{Subject}'[/]");
-            Thread.Sleep(ShortPauseMs);
+            Thread.Sleep(GameSettings.ShortPauseMs);
 
             if (player.Stats.Deaths > 0)
             {
                 AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [yellow]I see the session is hard for you... Let me just give you one plus in advance, but for this you will solve 20 LeetCode problems[/]");
                 state.CorrectAnswers = 1;
-                Thread.Sleep(ShortPauseMs);
+                Thread.Sleep(GameSettings.ShortPauseMs);
             }
             else
             {

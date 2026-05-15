@@ -8,11 +8,13 @@ namespace KpiSessionSimulator.Shop
     [ShopPerks]
     public class Immunity : IItemCommand
     {
-        public string Name => "Immunity";
+        private const string PerkName = "Immunity";
+        private const int PerkPrice = 500;
+        private const string PerkDescription = "Due to a small scholarship, your digestive system has evolved, now your body can break down a bullet in the head into nutrients";
 
-        public int Price => 500;
-
-        public string Description => "Due to a small scholarship, your digestive system has evolved, now your body can break down a bullet in the head into nutrients";
+        public string Name => PerkName;
+        public int Price => PerkPrice;
+        public string Description => PerkDescription;
 
         public void Execute(Player player)
         {

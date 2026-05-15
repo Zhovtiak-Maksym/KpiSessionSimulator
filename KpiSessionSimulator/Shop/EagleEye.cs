@@ -8,11 +8,13 @@ namespace KpiSessionSimulator.Shop
     [ShopPerks]
     public class EagleEye : IItemCommand
     {
-        public string Name => "Blue Eye";
+        private const string PerkName = "Blue Eye";
+        private const int PerkPrice = 300;
+        private const string PerkDescription = "Improves your vision due to drinking alcohol on Polyana, now you can see not only squirrels but also the wrong answer";
 
-        public int Price => 300;
-
-        public string Description => "Improves your vision due to drinking alcohol on Polyana, now you can see not only squirrels but also the wrong answer";
+        public string Name => PerkName;
+        public int Price => PerkPrice;
+        public string Description => PerkDescription;
 
         public void Execute(Player player)
         {

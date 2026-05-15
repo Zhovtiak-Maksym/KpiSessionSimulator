@@ -7,8 +7,6 @@ namespace KpiSessionSimulator.Teachers
 {
     public class MatanTeacher : BasicTeacher
     {
-        private const int ShortPauseMs = 1500;
-
         public MatanTeacher() : base("Mr. Leheza", new TransferToFiotPenalty("FIOT"), "Calculus") { }
 
         public override void Interact(Player player, ExamState state)
@@ -21,12 +19,12 @@ namespace KpiSessionSimulator.Teachers
             }
 
             AnsiConsole.MarkupLine($"\n[grey]You came to the exam to[/] [cyan]{Name}[/][grey], I hope you drank holy water...[/]");
-            Thread.Sleep(ShortPauseMs);
+            Thread.Sleep(GameSettings.ShortPauseMs);
 
             if (player.Stats.Deaths > 0)
             {
                 AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [yellow]I heard the ambulance took you away at the last exam? I hope today you won't faint from my integrals![/]");
-                Thread.Sleep(ShortPauseMs);
+                Thread.Sleep(GameSettings.ShortPauseMs);
             }
 
             if (Random.Shared.Next(1, 101) <= 30)
@@ -42,7 +40,7 @@ namespace KpiSessionSimulator.Teachers
                     state.CurrentDifficulty = Difficulty.Medium;
                 }
 
-                Thread.Sleep(ShortPauseMs);
+                Thread.Sleep(GameSettings.ShortPauseMs);
             }
 
             AnsiConsole.MarkupLine($"\n[cyan]{Name}:[/] [white]Dear student! Prepare for my triple integral![/]");

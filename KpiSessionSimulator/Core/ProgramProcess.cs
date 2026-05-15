@@ -4,7 +4,6 @@ using KpiSessionSimulator.Models;
 using KpiSessionSimulator.Services;
 using KpiSessionSimulator.Teachers;
 using Spectre.Console;
-using System.Numerics;
 
 namespace KpiSessionSimulator.Core
 {
@@ -15,9 +14,6 @@ namespace KpiSessionSimulator.Core
 
         public const int RouletteProbability = 40;
         public const int BlackjackLossesForPenalty = 3;
-
-        private const int ShortPauseMs = 1500;
-        private const int LongPauseMs = 3000;
 
         private const int ExamPassRewardTokens = 150;
 
@@ -59,7 +55,7 @@ namespace KpiSessionSimulator.Core
             }
 
             AnsiConsole.MarkupLine($"\n[grey]Tickets are on the table. You need to answer {QuestionsToPass}/{QuestionsToAnswer} questions[/]");
-            Thread.Sleep(LongPauseMs);
+            Thread.Sleep(GameSettings.LongPauseMs);
 
             for (int i = 1; i <= QuestionsToAnswer; i++)
             {
@@ -79,7 +75,7 @@ namespace KpiSessionSimulator.Core
                 {
                     i--;
                     AnsiConsole.MarkupLine("\n[cyan]You get new tickets because you won a second chance...[/]");
-                    Thread.Sleep(ShortPauseMs);
+                    Thread.Sleep(GameSettings.ShortPauseMs);
                 }
             }
 
@@ -213,16 +209,16 @@ namespace KpiSessionSimulator.Core
             IMiniGame miniGame = isRoulette ? ExamRoulette : new Blackjack();
 
             AnsiConsole.MarkupLine("\n[grey]Preparing for the minigame...[/]");
-            Thread.Sleep(ShortPauseMs);
+            Thread.Sleep(GameSettings.ShortPauseMs);
 
             AnsiConsole.Write(new Rule(isRoulette ? "[red]MINIGAME: ROULETTE[/]" : "[red]MINIGAME: BLACKJACK[/]").RuleStyle("red"));
-            Thread.Sleep(ShortPauseMs);
+            Thread.Sleep(GameSettings.ShortPauseMs);
 
             bool wonMinigame = miniGame.Play(Player, Teacher, questionNum);
 
-            Thread.Sleep(ShortPauseMs);
+            Thread.Sleep(GameSettings.ShortPauseMs);
             AnsiConsole.Write(new Rule("[grey]Returning to the exam...[/]").RuleStyle("grey"));
-            Thread.Sleep(ShortPauseMs);
+            Thread.Sleep(GameSettings.ShortPauseMs);
 
             if (wonMinigame)
             {
