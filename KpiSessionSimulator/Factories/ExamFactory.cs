@@ -32,7 +32,9 @@ namespace KpiSessionSimulator.Factories
                     break;
                 default:
                     AnsiConsole.MarkupLine("\n[bold red]No such option! You are sent to Mr.Leheza...[/]");
-                    goto case "Matan (Leheza)";
+                    teacher = new MatanTeacher();
+                    questions = await QuestionsLoader.LoadQuestionsAsync(PathsMacker.MatanQuestions);
+                    break;
             }
 
             ExamData exData = new ExamData

@@ -187,15 +187,15 @@ namespace KpiSessionSimulator.Core
             return HandleWrongAnswer(questionNum);
         }
 
-        private bool HandleWrongAnswer(int questionNum)
+        private bool HandleWrongAnswer(int questionNum) 
         {
             AnsiConsole.MarkupLine($"\n[bold red]Wrong! {Teacher.Name} burns a hole in you with their eyes...[/]");
-            Player.WrongAnswersStreak++;
 
             if (!UIHelper.AskYesNo("\n[red]Play a minigame to survive?[/]"))
             {
                 AnsiConsole.MarkupLine("\n[grey]You took the minus without a fight[/]");
-                DiffManager.IncreaseDifficulty(State);
+                Player.WrongAnswersStreak++;
+                CheckForIncreasingDifficulty();
 
                 return false;
             }
@@ -203,7 +203,7 @@ namespace KpiSessionSimulator.Core
             return PlayMinigame(questionNum);
         }
 
-        private bool PlayMinigame(int questionNum)
+        private bool PlayMinigame(int questionNum) 
         {
             bool isRoulette = Rnd.Next(1, 101) <= RouletteProbability;
             IMiniGame miniGame = isRoulette ? ExamRoulette : new Blackjack();
@@ -227,9 +227,21 @@ namespace KpiSessionSimulator.Core
                 return true;
             }
 
+            Player.WrongAnswersStreak++;
+            CheckForIncreasingDifficulty();
+
             ApplyMinigameLoss(isRoulette);
 
             return false;
+        }
+
+        private void CheckForIncreasingDifficulty()
+        {
+            if (Player.WrongAnswersStreak > 0 && Player.WrongAnswersStreak % 5 == 0)
+            {
+                AnsiConsole.MarkupLine("\n[bold red]The teacher is furious! The exam difficulty has increased![/]");
+                DiffManager.IncreaseDifficulty(State);
+            }
         }
 
         private void ApplyMinigameLoss(bool isRoulette)
