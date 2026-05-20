@@ -47,7 +47,7 @@ namespace KpiSessionSimulator.Core
 
         public static void CheckRouletteAchievements(Player player)
         {
-                GiveAchievement(player, "Terminator");
+            GiveAchievement(player, "Terminator");
         }
 
         public static void DisplayAchievements(Player player)
