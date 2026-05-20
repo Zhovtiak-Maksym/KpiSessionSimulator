@@ -52,19 +52,27 @@ namespace KpiSessionSimulator.Core
 
         public static void DisplayAchievements(Player player)
         {
+            AnsiConsole.WriteLine();
+
+            var table = new Table()
+                .Border(TableBorder.Rounded) 
+                .Title("[bold gold1]Achievements[/]");
+
+            table.AddColumn(new TableColumn("[gold1]Name[/]").Centered());
+
             if (player.Stats.Achievements == null || player.Stats.Achievements.Count == 0)
             {
-                AnsiConsole.MarkupLine("[grey]Achievements: None[/]");
-
-                return;
+                table.AddRow("[grey]None[/]");
             }
-
-            AnsiConsole.MarkupLine("\n[bold gold1]Achievements:[/]");
-
-            foreach (var ach in player.Stats.Achievements)
+            else
             {
-                AnsiConsole.MarkupLine($" - [cyan]{ach}[/]");
+                foreach (var ach in player.Stats.Achievements)
+                {
+                    table.AddRow($"[cyan]{ach}[/]");
+                }
             }
+
+            AnsiConsole.Write(table);
         }
     }
 }

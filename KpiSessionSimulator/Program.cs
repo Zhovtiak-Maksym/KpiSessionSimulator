@@ -159,6 +159,8 @@ namespace KpiSessionSimulator
 
             AnsiConsole.Write(table);
 
+            AchievementManager.DisplayAchievements(player);
+
             AnsiConsole.MarkupLine("\n[grey](Press any key to return to menu)[/]");
             Console.ReadKey(true);
         }
