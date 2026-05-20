@@ -98,8 +98,13 @@ namespace KpiSessionSimulator.Core
 
                 var stats = Player.Stats;
                 stats.Tokens += ExamPassRewardTokens;
-                stats.IsONSecondary = false;
                 stats.PassedExams++;
+                Player.Stats = stats; 
+
+                AchievementManager.CheckAchievementsAfterExam(Player, Teacher);
+
+                stats = Player.Stats; 
+                stats.IsONSecondary = false;
                 Player.Stats = stats;
             }
             else

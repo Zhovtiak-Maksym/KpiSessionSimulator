@@ -56,6 +56,8 @@ namespace KpiSessionSimulator.Minigames
                 {
                     AnsiConsole.MarkupLine("[cyan]The bullet in your head begins to dissolve, and the wound heals[/]");
 
+                    AchievementManager.CheckRouletteAchievements(player);
+
                     return true;
                 }
                 else

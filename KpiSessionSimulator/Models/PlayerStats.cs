@@ -11,5 +11,11 @@
         public int ImmunityCount { get; set; }
         public int LoyaltyCount { get; set; }
         public int TrickyHandsCount { get; set; }
+        public List<string> Achievements { get; set; }
+
+        public PlayerStats() 
+        {
+            Achievements = new List<string>();
+        }
     }
 }
